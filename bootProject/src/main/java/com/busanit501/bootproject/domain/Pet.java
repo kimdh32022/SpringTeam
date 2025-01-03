@@ -17,8 +17,9 @@ public class Pet extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long petId; // 반려동물 ID
 
-    @Column(nullable = false)
-    private Long userId; // 사용자 ID (FK)
+    @ManyToOne
+    @JoinColumn(name = "userId", nullable = false)
+    private User user;  // 사용자 ID (FK)
 
     @Column(length = 100, nullable = false)
     private String name; // 반려동물 이름

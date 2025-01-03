@@ -17,8 +17,9 @@ public class Gallery extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long galleryId; // 갤러리 ID
 
-    @Column(nullable = false)
-    private Long userId; // 사용자 ID (FK)
+    @ManyToOne
+    @JoinColumn(name = "userId", nullable = false)
+    private User user;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
