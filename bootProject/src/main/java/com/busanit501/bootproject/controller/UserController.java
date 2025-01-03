@@ -103,8 +103,15 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+
+
     @GetMapping("/main")
     public String mainPage(Model model) {
         return "/main"; // main.html로 이동
+    }
+
+    @GetMapping("/profile")
+    public String profilePage(Model model) {
+        return "/user/profile";
     }
 }
