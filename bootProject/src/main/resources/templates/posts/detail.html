@@ -6,44 +6,97 @@
 <body>
 <div layout:fragment="content" class="container mt-5">
   <h1 class="mb-4" th:text="${post.title}">게시글 제목</h1>
+  <p th:if="${post == null}">게시글을 불러올 수 없습니다.</p>
 
   <p class="text-muted" th:text="'카테고리: ' + ${post.category}"></p>
 
-  <!-- 이미지가 있는 경우에만 출력 -->
   <img th:if="${post.imageUrl}" th:src="${post.imageUrl}" class="img-fluid mb-4" alt="첨부 이미지">
 
   <p th:text="${post.content}">게시글 내용</p>
 
-  <div class="mt-4">
-    <a th:href="@{/posts(page=${currentPage})}" class="btn btn-secondary">목록으로</a>
-    <!-- 수정 페이지로 이동하는 버튼 -->
-      <a th:href="@{/posts/edit/{id}(id=${post.postId}, page=${currentPage}, category=${post.category})}"
-         class="btn btn-primary">수정하기</a>
+  <!-- 댓글 목록 -->
+  <div class="mt-5">
+    <h3>댓글</h3>
+    <div th:if="${#lists.isEmpty(comments)}">
+      <p>아직 댓글이 없습니다. 첫 번째 댓글을 남겨보세요!</p>
+    </div>
+
+    <div th:each="comment : ${comments}" class="border p-3 mb-3">
+      <p>
+        <strong th:text="${comment.user.name}">작성자</strong>
+        <span class="text-muted" th:text="${#temporals.format(comment.created_at, 'yyyy-MM-dd')}"></span>
+      </p>
+
+      <!-- 댓글 내용 (초기 상태) -->
+      <p th:id="'commentContent-' + ${comment.commentId}" th:text="${comment.content}" class="comment-content">댓글 내용</p>
+
+      <!-- 수정 폼 (초기에는 숨김 처리) -->
+      <form th:id="'editForm-' + ${comment.commentId}" th:style="'display:none;'"
+            th:action="@{'/comments/update/' + ${comment.commentId}}" method="post">
+        <input type="hidden" name="userId" th:value="${loggedInUserId}">
+        <input type="hidden" name="postId" th:value="${post.postId}">
+        <textarea name="content" th:text="${comment.content}" required class="form-control mb-2"></textarea>
+        <button type="submit" class="btn btn-primary btn-sm">수정 완료</button>
+        <button type="button" class="btn btn-secondary btn-sm" th:onclick="'hideEditForm(' + ${comment.commentId} + ')'">취소</button>
+      </form>
+
+      <!-- 수정/삭제 버튼 -->
+      <div th:if="${comment.user.userId == loggedInUserId}">
+        <button class="btn btn-sm btn-warning" th:onclick="'showEditForm(' + ${comment.commentId} + ')'">수정</button>
+        <form th:action="@{'/comments/delete/' + ${comment.commentId}}" method="post" class="d-inline">
+          <input type="hidden" name="userId" th:value="${loggedInUserId}">
+          <input type="hidden" name="postId" th:value="${post.postId}">
+          <button type="submit" class="btn btn-sm btn-danger">삭제</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 새 댓글 작성 폼 -->
+  <div class="mt-5">
+    <h4>새 댓글 작성</h4>
+    <form th:action="@{/comments/create}" method="post">
+      <input type="hidden" name="postId" th:value="${post.postId}">
+      <input type="hidden" name="userId" th:value="${loggedInUserId}">
+      <input type="hidden" name="page" th:value="${page}">
+      <div class="mb-3">
+        <textarea class="form-control" name="content" rows="3" placeholder="댓글을 입력하세요" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">댓글 작성</button>
+    </form>
   </div>
 </div>
-  <!-- 🟩 JavaScript 코드 삽입 -->
-  <script>
-    document.querySelector("#deleteBtn").onclick = function() {
-      const postId = this.dataset.id;
 
-      if (confirm("정말 삭제하시겠습니까?")) {
-        fetch(`/posts/delete/${postId}`, {
-          method: "DELETE"
-        })
-                .then(response => {
-                  if (response.ok) {
-                    alert("게시글이 삭제되었습니다.");
-                    window.location.href = "/posts";
-                  } else {
-                    alert("삭제 실패: " + response.statusText);
-                  }
-                })
-                .catch(error => {
-                  console.error("Error:", error);
-                  alert("오류가 발생했습니다.");
-                });
-      }
-    };
-  </script>
+<!-- 자바스크립트 -->
+<script th:inline="javascript">
+  /* Thymeleaf를 통해 alert 표시 (예: 댓글 작성 성공 메시지) */
+  let successMessage = /*[[${successMessage}]]*/ null;
+  if (successMessage) {
+    alert(successMessage);
+  }
+
+  // 댓글 수정 폼 보여주기
+  function showEditForm(commentId) {
+    const editForm = document.querySelector(`#editForm-${commentId}`);
+    const commentContent = document.querySelector(`#commentContent-${commentId}`);
+
+    if (editForm && commentContent) {
+      editForm.style.display = 'block';
+      commentContent.style.display = 'none';
+    }
+  }
+
+  // 수정 폼 숨기기
+  function hideEditForm(commentId) {
+    const editForm = document.querySelector(`#editForm-${commentId}`);
+    const commentContent = document.querySelector(`#commentContent-${commentId}`);
+
+    if (editForm && commentContent) {
+      editForm.style.display = 'none';
+      commentContent.style.display = 'block';
+    }
+  }
+</script>
+
 </body>
 </html>

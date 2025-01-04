@@ -1,17 +1,18 @@
 package com.busanit501.bootproject.controller;
 
 import com.busanit501.bootproject.domain.Category;
+import com.busanit501.bootproject.domain.Comment;
 import com.busanit501.bootproject.domain.Post;
 import com.busanit501.bootproject.domain.Users;
+import com.busanit501.bootproject.dto.CommentDTO;
 import com.busanit501.bootproject.repository.UsersRepository;
+import com.busanit501.bootproject.service.comment.CommentService;
 import com.busanit501.bootproject.service.post.PostService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
@@ -32,10 +34,12 @@ public class PostController {
 
     private final PostService postService;
     private final UsersRepository usersRepository;
+    private final CommentService commentService;
 
-    public PostController(PostService postService, UsersRepository usersRepository) {
+    public PostController(PostService postService, UsersRepository usersRepository, CommentService commentService) {
         this.postService = postService;
         this.usersRepository = usersRepository;
+        this.commentService = commentService;
     }
 
     // 글쓰기 GET
@@ -153,22 +157,20 @@ public String registerPost(@RequestParam("title") String title,
         return "posts/list";
     }
 
-    // 📌 게시글 상세 조회
+    // 📌 게시글 상세 조회 (댓글 포함)
     @GetMapping("/{id}")
-    public String getPostDetail(@PathVariable Long id,
-                                @RequestParam(value = "page", defaultValue = "0") int page,
-                                Model model,
-                                RedirectAttributes redirectAttributes) {
+    public String getPostDetail(@PathVariable Long id, Model model) {
         Post post = postService.getPostById(id);
+        List<Comment> comments = commentService.getCommentsByPost(id);
 
-        if (post == null) {
-            redirectAttributes.addFlashAttribute("errorMessage", "해당 게시글을 찾을 수 없습니다.");
-            return "redirect:/posts";
-        }
+        // 가정: 로그인된 사용자의 ID
+        Long loggedInUserId = 1L;
 
         model.addAttribute("post", post);
-        model.addAttribute("currentPage", page);
-        return "posts/detail";
+        model.addAttribute("comments", comments);
+        model.addAttribute("loggedInUserId", loggedInUserId);
+
+        return "posts/detail";  // detail.html 템플릿으로 연결
     }
 
     // 📌 게시글 수정 페이지
@@ -234,6 +236,8 @@ public String registerPost(@RequestParam("title") String title,
         return "success";
     }
 
+
+    // 동물병원 페이지
     @GetMapping("/category/hospital")
     public String hospitalPage(Model model,
                                @RequestParam(defaultValue = "0") int page,
@@ -247,6 +251,8 @@ public String registerPost(@RequestParam("title") String title,
         return "posts/hospital";
     }
 
+
+    // 중고 장터 페이지
     @GetMapping("/category/useditems")
     public String usedItemsPage(Model model,
                                @RequestParam(defaultValue = "0") int page,
@@ -259,6 +265,5 @@ public String registerPost(@RequestParam("title") String title,
         model.addAttribute("totalPages", postsPage.getTotalPages());
         return "posts/useditems";
     }
-
 
 }
