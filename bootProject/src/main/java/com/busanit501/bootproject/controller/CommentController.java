@@ -50,17 +50,4 @@ public class CommentController {
         return "redirect:/posts/" + postId;
     }
 
-    // 댓글 수정
-    @PostMapping("/update/{id}")
-    public String updateComment(@PathVariable Long id,
-                                @RequestParam String content,
-                                @RequestParam Long userId,
-                                @RequestParam Long postId) {
-        Users user = usersRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-
-        commentService.updateComment(id, user, content);
-
-        return "redirect:/posts/" + postId;
-    }
 }

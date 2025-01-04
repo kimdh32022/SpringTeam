@@ -11,5 +11,4 @@ public interface CommentService {
     List<Comment> getCommentsByPost(Long postId);
     Comment createComment(Long postId, Users user, String content);
     void deleteComment(Long commentId, Users user);
-    Comment updateComment(Long commentId, Users user, String content);  // 수정 메서드 추가
 }

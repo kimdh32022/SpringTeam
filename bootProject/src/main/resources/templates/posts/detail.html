@@ -27,22 +27,10 @@
         <span class="text-muted" th:text="${#temporals.format(comment.created_at, 'yyyy-MM-dd')}"></span>
       </p>
 
-      <!-- 댓글 내용 (초기 상태) -->
-      <p th:id="'commentContent-' + ${comment.commentId}" th:text="${comment.content}" class="comment-content">댓글 내용</p>
+      <p th:text="${comment.content}">댓글 내용</p>
 
-      <!-- 수정 폼 (초기에는 숨김 처리) -->
-      <form th:id="'editForm-' + ${comment.commentId}" th:style="'display:none;'"
-            th:action="@{'/comments/update/' + ${comment.commentId}}" method="post">
-        <input type="hidden" name="userId" th:value="${loggedInUserId}">
-        <input type="hidden" name="postId" th:value="${post.postId}">
-        <textarea name="content" th:text="${comment.content}" required class="form-control mb-2"></textarea>
-        <button type="submit" class="btn btn-primary btn-sm">수정 완료</button>
-        <button type="button" class="btn btn-secondary btn-sm" th:onclick="'hideEditForm(' + ${comment.commentId} + ')'">취소</button>
-      </form>
-
-      <!-- 수정/삭제 버튼 -->
+      <!-- 삭제 버튼만 남기기 -->
       <div th:if="${comment.user.userId == loggedInUserId}">
-        <button class="btn btn-sm btn-warning" th:onclick="'showEditForm(' + ${comment.commentId} + ')'">수정</button>
         <form th:action="@{'/comments/delete/' + ${comment.commentId}}" method="post" class="d-inline">
           <input type="hidden" name="userId" th:value="${loggedInUserId}">
           <input type="hidden" name="postId" th:value="${post.postId}">
@@ -50,6 +38,7 @@
         </form>
       </div>
     </div>
+
   </div>
 
   <!-- 새 댓글 작성 폼 -->
@@ -66,37 +55,6 @@
     </form>
   </div>
 </div>
-
-<!-- 자바스크립트 -->
-<script th:inline="javascript">
-  /* Thymeleaf를 통해 alert 표시 (예: 댓글 작성 성공 메시지) */
-  let successMessage = /*[[${successMessage}]]*/ null;
-  if (successMessage) {
-    alert(successMessage);
-  }
-
-  // 댓글 수정 폼 보여주기
-  function showEditForm(commentId) {
-    const editForm = document.querySelector(`#editForm-${commentId}`);
-    const commentContent = document.querySelector(`#commentContent-${commentId}`);
-
-    if (editForm && commentContent) {
-      editForm.style.display = 'block';
-      commentContent.style.display = 'none';
-    }
-  }
-
-  // 수정 폼 숨기기
-  function hideEditForm(commentId) {
-    const editForm = document.querySelector(`#editForm-${commentId}`);
-    const commentContent = document.querySelector(`#commentContent-${commentId}`);
-
-    if (editForm && commentContent) {
-      editForm.style.display = 'none';
-      commentContent.style.display = 'block';
-    }
-  }
-</script>
 
 </body>
 </html>

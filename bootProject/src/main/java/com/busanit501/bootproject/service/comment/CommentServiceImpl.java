@@ -55,18 +55,5 @@ import java.util.stream.Collectors;
             commentRepository.delete(comment);
         }
 
-        // 댓글 수정
-        @Override
-        public Comment updateComment(Long commentId, Users user, String content) {
-            Comment comment = commentRepository.findById(commentId)
-                    .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
 
-            // 수정 권한 확인
-            if (!comment.getUser().getUserId().equals(user.getUserId())) {
-                throw new SecurityException("수정 권한이 없습니다.");
-            }
-
-            comment.setContent(content);  // 댓글 내용 수정
-            return commentRepository.save(comment);  // 저장
-        }
     }
