@@ -51,7 +51,10 @@ public class MatchingRoom extends BaseEntity {
     }
 
     public void exitRoom(int currentParticipants){
-        this.currentParticipants = currentParticipants-1;
+        this.currentParticipants = currentParticipants - 1;
+    }
+    public void inviteRoom(int currentParticipants){
+        this.currentParticipants = currentParticipants + 1;
     }
 }
 

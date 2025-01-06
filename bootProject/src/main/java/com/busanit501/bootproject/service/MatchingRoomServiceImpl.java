@@ -77,6 +77,14 @@ public class MatchingRoomServiceImpl implements MatchingRoomService {
     }
 
     @Override
+    public void inviteMatchingRoom(MatchingRoomDTO matchingRoomDTO) {
+        Optional<MatchingRoom> result = matchingRoomRepository.findById(matchingRoomDTO.getRoomId());
+        MatchingRoom matchingRoom = result.orElseThrow();
+        matchingRoom.inviteRoom(matchingRoomDTO.getCurrentParticipants());
+        matchingRoomRepository.save(matchingRoom);
+    }
+
+    @Override
     public void deleteMatchingRoom(int roomId) {
         matchingRoomRepository.deleteById(roomId);
     }

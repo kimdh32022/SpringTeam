@@ -41,8 +41,8 @@ public class MessageServiceTests {
     @Test
     public void testSearchMessageByChatRoomId() {
         String keyword = "";
-        int chatRoomId = 31;
-        var message = messageService.searchMessage(keyword, chatRoomId);
+        int chatRoomId = 69;
+        var message = messageService.searchMessage(chatRoomId);
 
         message.forEach(messageDTO -> {
             log.info("messageId: " + messageDTO.getMessageId());
@@ -51,6 +51,7 @@ public class MessageServiceTests {
             log.info("content: " + messageDTO.getContent());
             log.info("sentAt: " + messageDTO.getSentAt());
             log.info("isRead: " + messageDTO.isRead());
+            log.info("SenderName: " + messageDTO.getSenderName());
             log.info("-------------------------------------------");
         });
     }

@@ -122,6 +122,8 @@
             flex: 1;
             padding: 15px;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column-reverse; /* 메시지가 아래에서 위로 올라가게 */
         }
 
         .message {
@@ -218,17 +220,12 @@
 
         <div class="chat-window">
             <div class="chat-header">채팅방</div>
-            <div class="chat-messages">
-                <div class="message other">
-                    <div class="message-content">안녕하세요</div>
-                </div>
-                <div class="message user">
-                    <div class="message-content">안녕하세요</div>
-                </div>
+            <div class="chat-messages" id="chatMessages">
+                <!-- 채팅 메시지들이 여기에 동적으로 추가됨 -->
             </div>
             <div class="chat-input">
-                <input type="text" placeholder="메시지를 입력하세요...">
-                <button>전송</button>
+                <input type="text" id="chatMessageInput" placeholder="메시지를 입력하세요...">
+                <button id="sendMessageButton">전송</button>
             </div>
         </div>
 
@@ -388,6 +385,7 @@
                 .then(result => {
                     alert("채팅방을 생성했습니다.");
                     registerModal.hide();
+                    location.reload();
                 })
                 .catch(e => {
                     alert("예외가 발생함");
@@ -400,20 +398,20 @@
     const roomInfoModal = new bootstrap.Modal(document.querySelector(".roomInfoModal"));
 
     // 채팅 리스트에서 각 방 항목에 이벤트 리스너 추가
-    const chatItems = document.querySelectorAll(".chatInfo");
+    const chatItems = document.querySelectorAll(".chat-avatar");
 
     chatItems.forEach(chatItem => {
         chatItem.addEventListener("click", function () {
             console.log("방 정보 클릭")
             // 방 정보 가져오기
-            const roomId = this.querySelector("h4:nth-of-type(1)").innerText;
-            const hostId = this.querySelector("h4:nth-of-type(2)").innerText;
-            const roomTitle = this.querySelector("h4:nth-of-type(3)").innerText;
-            const status = this.querySelector("h4:nth-of-type(4)").innerText;
-            const currentParticipants = this.querySelector("h4:nth-of-type(5)").innerText;
-            const maxParticipants = this.querySelector("h4:nth-of-type(6)").innerText;
-            const roomParticipants = this.querySelector(".chat-preview span").innerText;
-            const roomDescription = this.querySelector(".chat-preview p").innerText;
+            const roomId = this.closest(".chatInfo").querySelector("h4:nth-of-type(1)").innerText;
+            const hostId = this.closest(".chatInfo").querySelector("h4:nth-of-type(2)").innerText;
+            const roomTitle = this.closest(".chatInfo").querySelector("h4:nth-of-type(3)").innerText;
+            const status = this.closest(".chatInfo").querySelector("h4:nth-of-type(4)").innerText;
+            const currentParticipants = this.closest(".chatInfo").querySelector("h4:nth-of-type(5)").innerText;
+            const maxParticipants = this.closest(".chatInfo").querySelector("h4:nth-of-type(6)").innerText;
+            const roomParticipants = this.closest(".chatInfo").querySelector(".chat-preview span").innerText;
+            const roomDescription = this.closest(".chatInfo").querySelector(".chat-preview p").innerText;
 
             // 모달에 정보 설정
             document.querySelector(".room-title").innerText = roomTitle;
@@ -421,7 +419,7 @@
             document.querySelector(".room-description").innerText = roomDescription;
 
             // 유저가 방의 호스트인지 확인
-            if (hostId == 2) {
+            if (hostId == 1) {
                 // 호스트일 때 수정, 삭제, 닫기 버튼을 표시
                 document.querySelector(".room-delete-btn").style.display = "inline-block";
                 document.querySelector(".room-edit-btn").style.display = "inline-block";
@@ -441,9 +439,9 @@
                 function (e) {
                     deleteRoom(roomId) // deleteRoom 함수 호출
                         .then(result => {
-                            // consoloe.log(result)
                             alert("채팅방이 삭제되었습니다.");
                             roomInfoModal.hide(); // 모달 닫기
+                            location.reload();
                         })
                         .catch((e) => {
                             alert("채팅방 삭제에 실패했습니다.");
@@ -463,7 +461,8 @@
                         status: status
                     };
                     const roomParticipantsDTO = {
-                        senderId: 2,
+                        chatRoomId:roomId,
+                        senderId: 2
                     };
                     const exitObj = {
                         matchingRoomDTO: matchingRoomDTO,
@@ -471,8 +470,9 @@
                     };
                     updateAndDelete(exitObj)
                         .then(result => {
-                            alert("방에서 나갔습니다.");
+                            alert(result+"님이 방에서 나갔습니다.");
                             roomInfoModal.hide();
+                            location.reload();
                         })
                         .catch(e => {
                             alert("예외가 발생함");
@@ -518,6 +518,7 @@
                     .then(result => {
                         alert("채팅방이 수정되었습니다.");
                         editModal.hide();
+                        location.reload();
                     })
                     .catch(e => {
                         alert("채팅방 수정에 실패했습니다.");
@@ -532,6 +533,65 @@
 
         });
     });
+
+    // 채팅방 클릭 시 roomId 저장
+    let currentRoomId = null;
+    document.querySelectorAll(".chat-preview").forEach(chatPreview => {
+        chatPreview.addEventListener("click", function () {
+            currentRoomId = this.closest(".chatInfo").querySelector("h4:nth-of-type(1)").innerText.trim();
+            console.log(`방 번호: ${currentRoomId}`);
+             loadChatMessages(currentRoomId);
+
+            setInterval(function() {
+                loadChatMessages(currentRoomId);
+            }, 5000);
+        });
+    });
+
+    // 채팅 내역 가져오기 함수
+    function loadChatMessages(roomId) {
+        console.log(`채팅방 ${roomId}의 메시지를 새로고침합니다.`);
+        getChatList(roomId)
+            .then(result => {
+                const chatMessages = document.getElementById("chatMessages");
+                chatMessages.innerHTML = "";
+                result.reverse().forEach(chatMessage => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.classList.add('message', chatMessage.senderId === 1 ? 'user' : 'other');
+                    messageDiv.innerHTML = `
+                    ${chatMessage.senderId !== 1 ? `<div class="sender-name"><strong>${chatMessage.senderName}</strong></div>` : ''}
+                    <div class="message-content">${chatMessage.content}</div>
+                `;
+                    chatMessages.appendChild(messageDiv);
+                });
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            })
+            .catch(e => alert("채팅 내역 조회 중 오류 발생"));
+    }
+
+    // 메시지 전송 및 채팅 새로고침
+    document.querySelector("#sendMessageButton").addEventListener("click", async () => {
+        if (!currentRoomId) {
+            return alert("채팅방을 먼저 선택해주세요.");
+        }
+
+        const messageInput = document.querySelector("#chatMessageInput");
+        const messageContent = messageInput.value.trim();
+        if (messageContent === "") return alert("메시지를 입력해주세요.");
+
+        const messageObj = {
+            senderId: 1,
+            content: messageContent,
+            chatRoomId: currentRoomId };
+        addMessage(messageObj)
+            .then(() => {
+                messageInput.value = "";  // 메시지 입력창 초기화
+                loadChatMessages(currentRoomId);  // 채팅 새로고침
+            })
+            .catch(e => alert("메시지 작성 중 오류 발생"));
+    });
+
+
 </script>
 
 </body>
