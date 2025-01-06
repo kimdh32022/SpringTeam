@@ -64,9 +64,11 @@
             </div>
 
             <div class="form-group">
-                <label for="profile-picture">프로필 사진 URL</label>
-                <input type="text" id="profile-picture" name="profilePicture" placeholder="프로필 사진 URL" required class="form-control">
+                <label for="profile-picture">프로필 사진</label>
+                <!-- 파일 첨부를 위한 input 태그 변경 -->
+                <input type="file" id="profile-picture" name="profilePicture" accept="image/*" required class="form-control">
             </div>
+
 
             <div class="form-group">
                 <label for="zipcode">주소</label>
@@ -94,21 +96,45 @@
         message.innerText = (password !== confirmPassword) ? '비밀번호가 일치하지 않습니다.' : '';
     });
 
+    // 이메일 중복 확인 결과를 저장하는 변수
+    let emailVerified = false;
     // 이메일 중복 확인
     document.getElementById('verify-btn').addEventListener('click', function() {
         const email = document.getElementById('email').value;
+        const message = document.getElementById('email-message');
+
+        if (!email) {
+            message.innerText = '이메일을 입력해주세요.';
+            return;
+        }
 
         $.ajax({
             url: '/users/check-email',
             type: 'POST',
             data: { email: email },
             success: function(response) {
-                document.getElementById('email-message').innerText = response.exists ? '중복된 이메일입니다.' : '사용 가능한 이메일입니다.';
+                emailVerified = !response.exists; // 중복 여부에 따라 이메일 검증 상태 업데이트
+                message.innerText = response.exists ? '중복된 이메일입니다.' : '사용 가능한 이메일입니다.';
+                updateSubmitButton(); // 회원가입 버튼 상태 업데이트
             },
             error: function() {
-                document.getElementById('email-message').innerText = '서버 오류가 발생했습니다.';
+                message.innerText = '서버 오류가 발생했습니다.';
             }
         });
+    });
+
+    // 회원가입 버튼 상태 업데이트
+    function updateSubmitButton() {
+        const submitButton = document.querySelector('button[type="submit"]');
+        submitButton.disabled = !emailVerified; // 이메일 검증 상태에 따라 버튼 활성화/비활성화
+    }
+
+    // 폼 제출 시 이메일 검증 상태 확인
+    document.getElementById('signup-form').addEventListener('submit', function(event) {
+        if (!emailVerified) {
+            event.preventDefault(); // 이메일이 중복된 경우 폼 제출 방지
+            alert('이메일 중복 확인을 완료해주세요.');
+        }
     });
 
     // 주소 찾기
