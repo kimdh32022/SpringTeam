@@ -1,6 +1,9 @@
 package com.busanit501.bootproject.controller;
 
-import com.busanit501.bootproject.dto.*;
+import com.busanit501.bootproject.dto.GalleryDTO;
+import com.busanit501.bootproject.dto.GalleryListAllDTO;
+import com.busanit501.bootproject.dto.PageRequestDTO;
+import com.busanit501.bootproject.dto.PageResponseDTO;
 import com.busanit501.bootproject.service.GalleryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
