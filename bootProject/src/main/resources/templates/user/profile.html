@@ -15,6 +15,7 @@
                  class="rounded-circle" alt="Profile Picture" />
             <h2 class="mt-2" th:text="${user.name} + '님 어서오세요.'"></h2>
                 <form action="/users/update" method="get">
+                    <input type="hidden" name="userId" th:value="${user.userId}">
                     <button type="submit" class="btn btn-secondary">내 정보 수정</button>
                 </form>
         </div>

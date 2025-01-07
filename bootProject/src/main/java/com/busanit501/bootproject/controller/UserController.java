@@ -33,12 +33,12 @@ public class UserController {
     }
     // 로그인 화면에서 기믹 수행
     @PostMapping("/login")
-    public String login(@RequestParam String email, @RequestParam String password, RedirectAttributes redirectAttributes) {
+    public String login(@RequestParam String email, @RequestParam String password,HttpSession session, RedirectAttributes redirectAttributes) {
         UserDTO user = userService.getUserByEmail(email);
         if (user != null && user.getPassword().equals(password)) {
             session.setAttribute("user", user); // 세션에 사용자 정보 저장
             log.info("로그인 성공");
-            return "redirect:/users/profile"; // main.html로 리다이렉션
+            return "redirect:/users/profile?userId="+ user.getUserId(); // main.html로 리다이렉션
         }
         log.info("로그인 실패");
         redirectAttributes.addFlashAttribute("message", "로그인 실패: 이메일 또는 비밀번호가 잘못되었습니다.");
@@ -63,15 +63,26 @@ public class UserController {
 
     // 프로필 화면 호출 및 데이터 탑재
     @GetMapping("/profile")
-    public String profilePage(Model model) {
+    public String profilePage(@RequestParam Long userId, Model model) {
+        UserDTO user = userService.getUserById(userId); // DB에서 최신 데이터 가져오기
+        model.addAttribute("user", user);
+        return "/user/profile"; // 프로필 페이지 템플릿
+    }
 
-        UserDTO user = (UserDTO) session.getAttribute("user");
-
-        if (user != null) {
-            model.addAttribute("user", user);
-        }
-
-        return "/user/profile";
+    // 수정 창 호출
+    @GetMapping("/update")
+    public String updatePage(@RequestParam Long userId, Model model) {
+        UserDTO userDTO = userService.getUserById(userId);
+        model.addAttribute("user", userDTO);
+        return "user/update";
+    }
+    // 수정 로직 사용
+    @PostMapping("/update")
+    public String update(@ModelAttribute UserDTO userDTO, RedirectAttributes redirectAttributes) {
+        userService.updateUser(userDTO.getUserId(), userDTO);
+        session.setAttribute("user", userDTO);
+        redirectAttributes.addFlashAttribute("message","회원정보를 성공적으로 수정했습니다.");
+        return "redirect:/users/profile?userId=" + userDTO.getUserId();
     }
 
     //이메일 중복 기믹 수행
@@ -81,46 +92,40 @@ public class UserController {
         return ResponseEntity.ok().body(Map.of("exists", exists));
     }
 
-    @GetMapping("/update")
-    public String updatePage(Model model) {
-        User user = new User(); // 또는 데이터베이스에서 사용자 정보를 가져오기
-        model.addAttribute("user", user);
-        return "user/update";
-    }
+    //사용자 생성
     @PostMapping
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
         UserDTO createdUser = userService.createUser(userDTO);
         return ResponseEntity.ok(createdUser);
     }
-    // 사용자 조회 (Read)
 
+    // 사용자 조회 (Read)
     @GetMapping("/{userId}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long userId) {
         UserDTO user = userService.getUserById(userId);
         return ResponseEntity.ok(user);
     }
-    // 모든 사용자 조회 (Read)
 
+    // 모든 사용자 조회 (Read)
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers() {
         List<UserDTO> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
-    // 사용자 업데이트 (Update)
 
+    // 사용자 업데이트 (Update)
     @PutMapping("/{userId}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable Long userId, @RequestBody UserDTO userDTO) {
         UserDTO updatedUser = userService.updateUser(userId, userDTO);
         return ResponseEntity.ok(updatedUser);
     }
-    // 사용자 삭제 (Delete)
 
+    // 사용자 삭제 (Delete)
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
         userService.deleteUser(userId);
 
         return ResponseEntity.noContent().build();
-
     }
 
     @GetMapping("/main")
