@@ -21,7 +21,7 @@ public class Comment extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private Users user;
+    private User user;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;

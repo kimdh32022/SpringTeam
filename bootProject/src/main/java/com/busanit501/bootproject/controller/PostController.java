@@ -3,9 +3,9 @@ package com.busanit501.bootproject.controller;
 import com.busanit501.bootproject.domain.Category;
 import com.busanit501.bootproject.domain.Comment;
 import com.busanit501.bootproject.domain.Post;
-import com.busanit501.bootproject.domain.Users;
+import com.busanit501.bootproject.domain.User;
 import com.busanit501.bootproject.dto.CommentDTO;
-import com.busanit501.bootproject.repository.UsersRepository;
+import com.busanit501.bootproject.repository.UserRepository;
 import com.busanit501.bootproject.service.comment.CommentService;
 import com.busanit501.bootproject.service.post.PostService;
 import lombok.extern.log4j.Log4j2;
@@ -33,12 +33,12 @@ import java.util.UUID;
 public class PostController {
 
     private final PostService postService;
-    private final UsersRepository usersRepository;
+    private final UserRepository userRepository;
     private final CommentService commentService;
 
-    public PostController(PostService postService, UsersRepository usersRepository, CommentService commentService) {
+    public PostController(PostService postService, UserRepository userRepository, CommentService commentService) {
         this.postService = postService;
-        this.usersRepository = usersRepository;
+        this.userRepository = userRepository;
         this.commentService = commentService;
     }
 
@@ -96,7 +96,7 @@ public String registerPost(@RequestParam("title") String title,
                            @RequestParam("category") String category,
                            @RequestParam("file") MultipartFile file) {
 
-    Users user = usersRepository.findById(1L)
+    User user = userRepository.findById(1L)
             .orElseThrow(() -> new NoSuchElementException("테스트 유저(User ID 1)가 존재하지 않습니다."));
 
     String imageUrl = null;
