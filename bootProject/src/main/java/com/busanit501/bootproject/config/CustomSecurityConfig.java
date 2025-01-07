@@ -83,7 +83,7 @@ public class CustomSecurityConfig {
                     authorizeRequests.requestMatchers
                             ("/admin/**","/board/update").hasRole("ADMIN");
                     //위의 3가지 조건을 제외한 나머지 모든 접근은 인증이 되어야 접근이 가능함.
-                    authorizeRequests
+                    authorizeRequests.requestMatchers("/comments/create").authenticated()
                             .anyRequest().authenticated();
 //                            .anyRequest().permitAll();
                 }

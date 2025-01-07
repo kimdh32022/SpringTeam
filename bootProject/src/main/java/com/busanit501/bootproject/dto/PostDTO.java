@@ -14,6 +14,7 @@ public class PostDTO {
     private Long postId;
     private Long userId;
     private String userName;
+    private UserDTO user;
     private String category;
     private String title;
     private String content;
