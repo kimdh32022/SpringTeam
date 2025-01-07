@@ -2,11 +2,9 @@ package com.busanit501.bootproject.service.comment;
 
 import com.busanit501.bootproject.domain.Comment;
 import com.busanit501.bootproject.domain.Post;
-import com.busanit501.bootproject.domain.Users;
-import com.busanit501.bootproject.dto.CommentDTO;
+import com.busanit501.bootproject.domain.User;
 import com.busanit501.bootproject.repository.CommentRepository;
 import com.busanit501.bootproject.repository.PostRepository;
-import com.busanit501.bootproject.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
