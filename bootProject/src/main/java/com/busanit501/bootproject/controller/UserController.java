@@ -85,6 +85,18 @@ public class UserController {
         return "redirect:/users/profile?userId=" + userDTO.getUserId();
     }
 
+    // 삭제 로직 처리
+    @PostMapping("/delete")
+    public String deleteUser(@RequestParam Long userId, HttpSession session, RedirectAttributes redirectAttributes) {
+        userService.deleteUser(userId); // 사용자 삭제 서비스 호출
+
+        // 세션에서 사용자 정보 제거
+        session.invalidate(); // 또는 session.removeAttribute("user");
+
+        redirectAttributes.addFlashAttribute("message", "회원탈퇴가 완료되었습니다.");
+        return "redirect:/users/login"; // 홈 페이지 등으로 리다이렉트
+    }
+
     //이메일 중복 기믹 수행
     @PostMapping("/check-email")
     public ResponseEntity<?> checkEmail(@RequestParam String email) {
