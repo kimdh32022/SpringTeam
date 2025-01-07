@@ -1,6 +1,7 @@
 package com.busanit501.bootproject.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Past;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -11,7 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class User extends BaseEntity{
+public class Users extends BaseEntity{
 
     @Id
     @Column(length = 50, nullable = false)
@@ -27,6 +28,7 @@ public class User extends BaseEntity{
     @Column(length = 50, nullable = false)
     private String name; // 사용자 이름
 
+    @Past// 과거만 설정
     @Column(length = 10, nullable = false)
     private LocalDate birth; // 사용자 나이 (null 가능)
 

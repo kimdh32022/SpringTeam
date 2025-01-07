@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class Pet extends BaseEntity {
+public class Pets extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +19,7 @@ public class Pet extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
-    private User user;  // 사용자 ID (FK)
+    private Users users;  // 사용자 ID (FK)
 
     @Column(length = 100, nullable = false)
     private String name; // 반려동물 이름
@@ -44,5 +44,9 @@ public class Pet extends BaseEntity {
 
     @Column(nullable = false)
     private boolean isVerified; // 인증 여부
+
+    public void setUsers(Users user) {
+        this.users = user; // users 필드 설정
+    }
 }
 
