@@ -35,7 +35,7 @@ public class MessageServiceImpl implements MessageService {
     private final ModelMapper modelMapper;
 
     @Override
-    public int addMessage(MessageDTO messageDTO) {
+    public long addMessage(MessageDTO messageDTO) {
         Message message = modelMapper.map(messageDTO, Message.class);
 
         User sender = userRepostiory.findById(messageDTO.getSenderId())
@@ -58,12 +58,12 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void deleteMessage(int messageId) {
+    public void deleteMessage(long messageId) {
         messageRepository.deleteById(messageId);
     }
 
     @Override
-    public List<MessageDTO> searchMessage(int roodId) {
+    public List<MessageDTO> searchMessage(long roodId) {
         List<MessageDTO> messages = messageRepository.searchMessageByMatchingRoomId(roodId);
 
         List<MessageDTO> dtoList = new ArrayList<>();

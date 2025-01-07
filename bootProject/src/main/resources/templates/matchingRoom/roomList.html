@@ -529,24 +529,39 @@
             editCloseBtn.addEventListener("click", function () {
                 editModal.hide();
             });
-
-
         });
     });
 
-    // 채팅방 클릭 시 roomId 저장
+    // 채팅방 클릭 시 roomId 저장 및 중복 새로고침 방지
     let currentRoomId = null;
+    let refreshInterval = null; // Interval ID 저장 변수
+
     document.querySelectorAll(".chat-preview").forEach(chatPreview => {
         chatPreview.addEventListener("click", function () {
-            currentRoomId = this.closest(".chatInfo").querySelector("h4:nth-of-type(1)").innerText.trim();
-            console.log(`방 번호: ${currentRoomId}`);
-             loadChatMessages(currentRoomId);
+            const newRoomId = this.closest(".chatInfo").querySelector("h4:nth-of-type(1)").innerText.trim();
 
-            setInterval(function() {
+            // 현재 방과 다른 방을 클릭했을 때만 처리
+            if (currentRoomId !== newRoomId) {
+                currentRoomId = newRoomId;
+                console.log(`방 번호: ${currentRoomId}`);
+
+                // 이전 Interval 제거
+                if (refreshInterval !== null) {
+                    clearInterval(refreshInterval);
+                    refreshInterval = null;
+                }
+
+                // 채팅 메시지 로드
                 loadChatMessages(currentRoomId);
-            }, 5000);
+
+                // 새로운 Interval 설정
+                refreshInterval = setInterval(function () {
+                    loadChatMessages(currentRoomId);
+                }, 5000);
+            }
         });
     });
+
 
     // 채팅 내역 가져오기 함수
     function loadChatMessages(roomId) {
@@ -560,8 +575,29 @@
                     messageDiv.classList.add('message', chatMessage.senderId === 1 ? 'user' : 'other');
                     messageDiv.innerHTML = `
                     ${chatMessage.senderId !== 1 ? `<div class="sender-name"><strong>${chatMessage.senderName}</strong></div>` : ''}
-                    <div class="message-content">${chatMessage.content}</div>
-                `;
+                    <div class="message-content">${chatMessage.content}</div>`;
+
+                    // 본인 메시지에만 클릭 이벤트 추가
+                    if (chatMessage.senderId === 1) {
+                        messageDiv.addEventListener('click', () => {
+                            console.log("삭제할 messageId"+chatMessage.messageId);
+                            const confirmDelete = confirm("이 메시지를 삭제하시겠습니까?");
+                            if (confirmDelete) {
+                                deleteMessage(chatMessage.messageId)
+                                    .then(response => {
+                                        if (response.messageId === chatMessage.messageId) {
+                                            console.log("메시지 삭제 성공");
+                                            loadChatMessages(roomId); // 메시지 새로고침
+                                        }
+                                    })
+                                    .catch(err => {
+                                        console.error("메시지 삭제 중 오류 발생:", err);
+                                        alert("메시지 삭제에 실패했습니다.");
+                                    });
+                            }
+                        });
+                    }
+
                     chatMessages.appendChild(messageDiv);
                 });
                 chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -590,9 +626,6 @@
             })
             .catch(e => alert("메시지 작성 중 오류 발생"));
     });
-
-
 </script>
-
 </body>
 </html>

@@ -35,7 +35,7 @@ public class MatchingRoomServiceTests {
                 .status(RoomParticipantsStatus.Pending)
                 .build();
 
-        int roomId = matchingRoomService.addMatchingRoom(matchingRoomDTO, roomParticipantsDTO);
+        long roomId = matchingRoomService.addMatchingRoom(matchingRoomDTO, roomParticipantsDTO);
         log.info("새로운 매칭방 ID: " + roomId);
     }
 
@@ -58,7 +58,7 @@ public class MatchingRoomServiceTests {
     // 매칭방 삭제 테스트
     @Test
     public void testDeleteMatchingRoom() {
-        int roomIdToDelete = 56; // 삭제할 매칭방 ID
+        long roomIdToDelete = 1; // 삭제할 매칭방 ID
         matchingRoomService.deleteMatchingRoom(roomIdToDelete);
         log.info("매칭방 삭제 완료: " + roomIdToDelete);
     }
@@ -67,7 +67,7 @@ public class MatchingRoomServiceTests {
     @Test
     public void testSearchAllMatchingRooms() {
         String keyword = "매칭"; // 검색 키워드
-        int userId = 1;
+        long userId = 1;
         var matchingRooms = matchingRoomService.searchAllMatchingRoom(keyword,userId);
 
         matchingRooms.forEach(room -> {

@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Builder
 public class UserDTO {
-    private int userId;
+    private long userId;
     private String email;
     private String name;
     private Integer age;

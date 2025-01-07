@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
-public interface RoomParticipantsRepository extends JpaRepository<RoomParticipants, Integer> {
+public interface RoomParticipantsRepository extends JpaRepository<RoomParticipants, Long> {
     @Transactional
     @Modifying
     @Query(value = "DELETE rp " +
@@ -14,5 +14,5 @@ public interface RoomParticipantsRepository extends JpaRepository<RoomParticipan
             "WHERE rp.chat_room_id = :roomId " +
             "AND rp.sender_id = :userId",
             nativeQuery = true) // nativeQuery 설정
-    void deleteByRoomIdAndUserId(int roomId, int userId);
+    void deleteByRoomIdAndUserId(long roomId, long userId);
 }

@@ -29,14 +29,15 @@ public class MatchingRoomController {
     public void roomList(@RequestParam(required = false, defaultValue = "") String keyword
             , UserDTO userDTO
             , Model model) {
-        int userId = 1; // 현재 유저 ID (테스트용)
+        long userId = 1; // 현재 유저 ID (테스트용)
         List<MatchingRoomDTO> roomList = matchingRoomService.searchAllMatchingRoom(keyword, userId);
         model.addAttribute("roomList", roomList);
         model.addAttribute("keyword", keyword);
     }
-
+    //매칭방 추가
+    @ResponseBody
     @PostMapping("/roomRegister")
-    public String registerRoom(@RequestBody RoomRegisterDTO roomRegisterDTO) {
+    public void registerRoom(@RequestBody RoomRegisterDTO roomRegisterDTO) {
         matchingRoomService.addMatchingRoom(roomRegisterDTO.getMatchingRoomDTO(), roomRegisterDTO.getRoomParticipantsDTO());
         // 채팅방 목록을 다시 조회하여 모델에 추가
 //        List<MatchingRoomDTO> roomList = matchingRoomService.searchAllMatchingRoom("", 1); // 1은 현재 유저 ID (테스트용)
@@ -46,44 +47,53 @@ public class MatchingRoomController {
 //        redirectAttributes.addFlashAttribute("message", "채팅방이 성공적으로 생성되었습니다.");
 
         // 리다이렉트(작동안댐)
-        return "redirect:/matchingRoom/roomList";
+        //return "redirect:/matchingRoom/roomList";
     }
-
+    //매칭방 나가기
     @ResponseBody
     @PostMapping("/roomUAD")
-    public Map<String,Integer> roomUAD(@RequestBody RoomRegisterDTO roomRegisterDTO){
+    public Map<String,Long> roomUAD(@RequestBody RoomRegisterDTO roomRegisterDTO){
         log.info("RoomRegisterDTO: " + roomRegisterDTO);
         matchingRoomService.exitMatchingRoom(roomRegisterDTO.getMatchingRoomDTO());
         matchingRoomService.deleteRoomParticipants(roomRegisterDTO.getRoomParticipantsDTO().getChatRoomId(),
                 roomRegisterDTO.getRoomParticipantsDTO().getSenderId());
-        Map<String, Integer> map = Map.of("UserId",roomRegisterDTO.getRoomParticipantsDTO().getSenderId());
+        Map<String, Long> map = Map.of("UserId",roomRegisterDTO.getRoomParticipantsDTO().getSenderId());
         return map;
     }
-
+    //매칭방 수정
     @ResponseBody
     @PutMapping("/{roomId}")
-    public Map<String, Integer> updateRoom(@RequestBody MatchingRoomDTO roomDTO,
-                                           @PathVariable("roomId") int roomId) {
+    public Map<String, Long> updateRoom(@RequestBody MatchingRoomDTO roomDTO,
+                                           @PathVariable("roomId") long roomId) {
         matchingRoomService.updateMatchingRoom(roomDTO);
-        Map<String, Integer> map = Map.of("roomId",roomId);
+        Map<String, Long> map = Map.of("roomId",roomId);
         return map;
     }
 
     // 채팅방 삭제
     @ResponseBody
     @DeleteMapping(value = "/{roomId}")
-    public Map<String, Integer> deleteRoom(@PathVariable("roomId") int roomId) {
+    public Map<String, Long> deleteRoom(@PathVariable("roomId") long roomId) {
         matchingRoomService.deleteMatchingRoom(roomId);
-        Map<String, Integer> map = Map.of("roomId",roomId);
-        log.info("map : " + map);
+        Map<String, Long> map = Map.of("roomId",roomId);
+        //log.info("map : " + map);
         return map;
-//        return "redirect:/matchingRoom/roomList";
+    }
+
+    //메세지 삭제(본인꺼)
+    @ResponseBody
+    @DeleteMapping(value = "/{messageId}")
+    public Map<String, Long> deleteMessage(@PathVariable("messageId") long messageId) {
+        messageService.deleteMessage(messageId);
+        Map<String, Long> map = Map.of("messageId",messageId);
+        //log.info("map : " + map);
+        return map;
     }
 
     //채팅 조회
     @ResponseBody
     @GetMapping("/chatList/{roomId}")
-    public List<MessageDTO> getChatList(@PathVariable("roomId") int roomId){
+    public List<MessageDTO> getChatList(@PathVariable("roomId") long roomId){
         List<MessageDTO> list = messageService.searchMessage(roomId);
         log.info("list : " + list);
         return list;
@@ -92,9 +102,9 @@ public class MatchingRoomController {
     //채팅 추가
     @ResponseBody
     @PostMapping("/messageRegister")
-    public Map<String, Integer> registerMessage(@RequestBody MessageDTO messageDTO) {
-        int messageId = messageService.addMessage(messageDTO);
-        Map<String,Integer> map = Map.of("messageId",messageId);
+    public Map<String, Long> registerMessage(@RequestBody MessageDTO messageDTO) {
+        long messageId = messageService.addMessage(messageDTO);
+        Map<String,Long> map = Map.of("messageId",messageId);
         log.info("map : " + map);
         return map;
     }

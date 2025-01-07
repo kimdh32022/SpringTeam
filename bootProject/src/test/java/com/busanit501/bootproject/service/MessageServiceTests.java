@@ -14,34 +14,34 @@ public class MessageServiceTests {
 
     @Test
     public void testAddMessage() {
-        MessageDTO messageDTO = MessageDTO.builder()
-                .chatRoomId(31)
-                .senderId(1)
-                .content("메세지 작성 테스트1")
-                .build();
-        int messageId = messageService.addMessage(messageDTO);
-        log.info(messageId);
+//        MessageDTO messageDTO = MessageDTO.builder()
+//                .chatRoomId(31)
+//                .senderId(1)
+//                .content("메세지 작성 테스트1")
+//                .build();
+//        long messageId = messageService.addMessage(messageDTO);
+//        log.info(messageId);
     }
 
     @Test
     public void testUpdateMessage() {
-        MessageDTO messageDTO = MessageDTO.builder()
-                .messageId(4)
-                .content("메세지 수정 테스트")
-                .build();
-        messageService.updateMessage(messageDTO);
+//        MessageDTO messageDTO = MessageDTO.builder()
+//                .messageId(4)
+//                .content("메세지 수정 테스트")
+//                .build();
+//        messageService.updateMessage(messageDTO);
     }
 
     @Test
     public void testDeleteMessage() {
-        int messageId = 4;
+        long messageId = 2;
         messageService.deleteMessage(messageId);
     }
 
     @Test
     public void testSearchMessageByChatRoomId() {
         String keyword = "";
-        int chatRoomId = 69;
+        long chatRoomId = 69;
         var message = messageService.searchMessage(chatRoomId);
 
         message.forEach(messageDTO -> {

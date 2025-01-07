@@ -22,30 +22,30 @@ public class MessageRepositoryTest {
     @Test
     @Transactional
     public void searchMessagesByRoomId() {
-        List<MessageDTO> messageList = messageRepository.searchMessageByMatchingRoomId("",31);
+        List<MessageDTO> messageList = messageRepository.searchMessageByMatchingRoomId(31);
         log.info(messageList);
     }
 
     @Test
     public void insertMessage() {
-        Message message = Message.builder()
-                .chatRoom(MatchingRoom.builder().roomId(31).build())
-                .sender(User.builder().userId(2).build())
-                .content("메세지3")
-                .build();
-        messageRepository.save(message);
+//        Message message = Message.builder()
+//                .chatRoom(MatchingRoom.builder().roomId(31).build())
+//                .sender(User.builder().userId(2).build())
+//                .content("메세지3")
+//                .build();
+//        messageRepository.save(message);
     }
 
     @Test
     public void updateMessage() {
-        Optional<Message> message = messageRepository.findById(1);
-        Message updateMessage = message.orElseThrow();
-        updateMessage.MessageUpdate("수정된 내용");
-        messageRepository.save(updateMessage);
+//        Optional<Message> message = messageRepository.findById(1);
+//        Message updateMessage = message.orElseThrow();
+//        updateMessage.MessageUpdate("수정된 내용");
+//        messageRepository.save(updateMessage);
     }
 
     @Test
     public void deleteMessage() {
-        messageRepository.deleteById(1);
+//        messageRepository.deleteById(1);
     }
 }

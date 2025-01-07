@@ -31,7 +31,7 @@ public class MatchingRoomServiceImpl implements MatchingRoomService {
     private final ModelMapper modelMapper;
 
     @Override
-    public int addMatchingRoom(MatchingRoomDTO matchingRoomDTO, RoomParticipantsDTO roomParticipantsDTO) {
+    public long addMatchingRoom(MatchingRoomDTO matchingRoomDTO, RoomParticipantsDTO roomParticipantsDTO) {
         // DTO -> MatchingRoom 변환
         MatchingRoom matchingRoom = modelMapper.map(matchingRoomDTO, MatchingRoom.class);
         RoomParticipants roomParticipants = modelMapper.map(roomParticipantsDTO, RoomParticipants.class);
@@ -85,17 +85,17 @@ public class MatchingRoomServiceImpl implements MatchingRoomService {
     }
 
     @Override
-    public void deleteMatchingRoom(int roomId) {
+    public void deleteMatchingRoom(long roomId) {
         matchingRoomRepository.deleteById(roomId);
     }
 
     @Override
-    public void deleteRoomParticipants(int roomId, int userId) {
+    public void deleteRoomParticipants(long roomId, long userId) {
         roomParticipantsRepository.deleteByRoomIdAndUserId(roomId, userId);
     }
 
     @Override
-    public List<MatchingRoomDTO> searchAllMatchingRoom(String keyword, int userId) {
+    public List<MatchingRoomDTO> searchAllMatchingRoom(String keyword, long userId) {
         // 키워드로 매칭룸 검색
         List<MatchingRoom> matchingRooms = matchingRoomRepository.searchAllMatchingRoom(keyword,userId);
 
