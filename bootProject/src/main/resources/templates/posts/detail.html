@@ -29,16 +29,14 @@
 
       <p th:text="${comment.content}">댓글 내용</p>
 
-      <!-- 삭제 버튼만 남기기 -->
+      <!-- 삭제 버튼 -->
       <div th:if="${comment.user.userId == loggedInUserId}">
         <form th:action="@{'/comments/delete/' + ${comment.commentId}}" method="post" class="d-inline">
-          <input type="hidden" name="userId" th:value="${loggedInUserId}">
           <input type="hidden" name="postId" th:value="${post.postId}">
           <button type="submit" class="btn btn-sm btn-danger">삭제</button>
         </form>
       </div>
     </div>
-
   </div>
 
   <!-- 새 댓글 작성 폼 -->
@@ -46,7 +44,6 @@
     <h4>새 댓글 작성</h4>
     <form th:action="@{/comments/create}" method="post">
       <input type="hidden" name="postId" th:value="${post.postId}">
-      <input type="hidden" name="userId" th:value="${loggedInUserId}">
       <input type="hidden" name="page" th:value="${page}">
       <div class="mb-3">
         <textarea class="form-control" name="content" rows="3" placeholder="댓글을 입력하세요" required></textarea>
