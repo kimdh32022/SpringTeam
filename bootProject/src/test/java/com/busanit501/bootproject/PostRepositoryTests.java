@@ -27,12 +27,12 @@ public class PostRepositoryTests {
     private PostRepository postRepository;
 
     @Autowired
-    private UsersRepository usersRepository;
+    private UserRepository userRepository;
 
     @Test
     public void testInsertPosts() {
         // 기본 사용자 조회 (예: user_id = 1)
-        Users user = usersRepository.findById(1L)
+        User user = userRepository.findById(1L)
                 .orElseThrow(() -> new IllegalStateException("User not found"));
 
         IntStream.rangeClosed(1, 5).forEach(i -> {

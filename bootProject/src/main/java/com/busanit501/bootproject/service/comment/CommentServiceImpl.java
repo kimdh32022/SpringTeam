@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
         // 댓글 작성
         @Override
         @Transactional
-        public Comment createComment(Long postId, Users user, String content) {
+        public Comment createComment(Long postId, User user, String content) {
             // 게시글 조회
             Post post = postRepository.findById(postId)
                     .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
         // 댓글 삭제
         @Override
         @Transactional
-        public void deleteComment(Long commentId, Users user) {
+        public void deleteComment(Long commentId, User user) {
             Comment comment = commentRepository.findById(commentId)
                     .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다."));
             if (!comment.getUser().getUserId().equals(user.getUserId())) {
