@@ -2,11 +2,15 @@ package com.busanit501.bootproject.controller;
 
 import com.busanit501.bootproject.domain.Review;
 import com.busanit501.bootproject.domain.User;
+import com.busanit501.bootproject.dto.UserDTO;
 import com.busanit501.bootproject.service.ReviewService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/reviews")
@@ -27,14 +31,28 @@ public class ReviewController {
     public String showReviewForm(HttpSession session, Model model) {
         User loginUser = (User) session.getAttribute("loginUser");
 
+        UserDTO userDTO;
         if (loginUser != null) {
-            model.addAttribute("user", loginUser);
+            userDTO = UserDTO.builder()
+                    .userId(loginUser.getUserId())
+                    .email(loginUser.getEmail())
+                    .name(loginUser.getName())
+                    .birth(loginUser.getBirth())
+                    .gender(loginUser.getGender())
+                    .address(loginUser.getAddress())
+                    .profilePicture(loginUser.getProfilePicture())
+                    .phoneNumber(loginUser.getPhoneNumber())
+                    .rating(loginUser.getRating())
+                    .ratingCount(loginUser.getRatingCount())
+                    .build();
         } else {
-            User defaultUser = new User();
-            defaultUser.setName("Guest");
-            defaultUser.setProfilePicture("/images/default-profile.png");  // 기본 이미지 설정
-            model.addAttribute("user", defaultUser);
+            userDTO = UserDTO.builder()
+                    .name("Guest")
+                    .profilePicture("/images/default-profile.png")
+                    .build();
         }
+
+        model.addAttribute("user", userDTO);
         return "review";
     }
 

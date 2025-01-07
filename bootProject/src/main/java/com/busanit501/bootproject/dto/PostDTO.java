@@ -1,21 +1,24 @@
 package com.busanit501.bootproject.dto;
 
-import com.busanit501.bootproject.domain.Comment;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CommentDTO {
-    private Long commentId;
+public class PostDTO {
     private Long postId;
     private Long userId;
     private String userName;
+    private String category;
+    private String title;
     private String content;
+    private String imageUrl;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
+    private List<CommentDTO> comments;
 }
