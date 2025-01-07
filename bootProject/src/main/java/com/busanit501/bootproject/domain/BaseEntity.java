@@ -19,10 +19,10 @@ import java.time.LocalDateTime;
 abstract class BaseEntity { // 유연하게 공통 작업시, 추상 클래스로 더 적합.
 
     @CreatedDate
-    @Column(name="regDate", updatable = false)
-    private LocalDateTime regDate;
+    @Column(name="created_at", updatable = false)
+    private LocalDateTime created_at;
 
     @LastModifiedDate
-    @Column(name="modDate", updatable = true)
-    private LocalDateTime modDate;
+    @Column(name="updated_at", updatable = true)
+    private LocalDateTime updated_at;
 }
