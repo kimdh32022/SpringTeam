@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 public interface RoomParticipantsRepository extends JpaRepository<RoomParticipants, Integer> {
     @Transactional
     @Modifying
-    @Query(value = "DELETE " +
+    @Query(value = "DELETE rp " +
             "FROM room_participants rp " +
             "WHERE rp.chat_room_id = :roomId " +
             "AND rp.sender_id = :userId",

@@ -63,18 +63,19 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<MessageDTO> searchMessage(String keyword, int roodId) {
-        List<Message> messages = messageRepository.searchMessageByMatchingRoomId(keyword, roodId);
+    public List<MessageDTO> searchMessage(int roodId) {
+        List<MessageDTO> messages = messageRepository.searchMessageByMatchingRoomId(roodId);
 
         List<MessageDTO> dtoList = new ArrayList<>();
-        for(Message message : messages) {
+        for(MessageDTO message : messages) {
             MessageDTO dto = MessageDTO.builder()
                     .messageId(message.getMessageId())
-                    .chatRoomId(message.getChatRoom().getRoomId())
-                    .senderId(message.getSender().getUserId())
+                    .chatRoomId(message.getChatRoomId())
+                    .senderId(message.getSenderId())
                     .content(message.getContent())
                     .sentAt(message.getSentAt())
                     .isRead(message.isRead())
+                    .senderName(message.getSenderName())
                     .build();
             dtoList.add(dto);
         }

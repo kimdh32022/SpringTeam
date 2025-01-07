@@ -18,7 +18,7 @@ public class Message extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int messageId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "chatRoomId")
     private MatchingRoom chatRoom;
 

@@ -3,6 +3,7 @@ package com.busanit501.bootproject.repository;
 import com.busanit501.bootproject.domain.MatchingRoom;
 import com.busanit501.bootproject.domain.Message;
 import com.busanit501.bootproject.domain.User;
+import com.busanit501.bootproject.dto.MessageDTO;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class MessageRepositoryTest {
     @Test
     @Transactional
     public void searchMessagesByRoomId() {
-        List<Message> messageList = messageRepository.searchMessageByMatchingRoomId("",31);
+        List<MessageDTO> messageList = messageRepository.searchMessageByMatchingRoomId("",31);
         log.info(messageList);
     }
 

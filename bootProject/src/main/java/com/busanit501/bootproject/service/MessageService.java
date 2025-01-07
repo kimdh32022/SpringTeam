@@ -9,5 +9,5 @@ public interface MessageService {
     int addMessage(MessageDTO messageDTO);
     void updateMessage(MessageDTO messageDTO);
     void deleteMessage(int messageId);
-    List<MessageDTO> searchMessage(String keyword,int roodId);
+    List<MessageDTO> searchMessage(int roodId);
 }

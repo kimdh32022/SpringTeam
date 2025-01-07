@@ -18,4 +18,6 @@ public class MessageDTO {
     private String content;
     private Timestamp sentAt;
     private boolean isRead;
+
+    private String senderName;
 }
