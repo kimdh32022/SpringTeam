@@ -1,28 +1,50 @@
 package com.busanit501.bootproject.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.ManyToOne;
-import lombok.Data;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Entity
-@Data
-public class Review {
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "reviews")
+public class Review extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long reviewId;
 
-    @ManyToOne
-    private MatchingRoom matchingRoom;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reviewer_id", nullable = false)
     private User reviewer;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reviewed_id", nullable = false)
     private User reviewed;
 
-    private Float rating;
-    private String comment;
+    @Column(nullable = false)
+    private String reason;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ReviewStatus status;
+
+    // 리뷰 상태 Enum
+    public enum ReviewStatus {
+        PENDING,
+        REVIEWED,
+        RESOLVED
+    }
+
+    // 리뷰 수정 메서드
+    public void updateReason(String reason) {
+        this.reason = reason;
+    }
+
+    public void updateStatus(ReviewStatus status) {
+        this.status = status;
+    }
 }

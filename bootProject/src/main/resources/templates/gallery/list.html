@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="www.thymeleaf.org"
+      layout:decorate="~{layout/base.html}">
+<body>
+<!-- content -->
+<div layout:fragment="content">
+갤러리 리스트
+    <div class="profile">
+        <div class="profile-image img"></div>
+        <div class="profile-info">
+            <div class="info-top">
+                <div class="manner">매너지수<span th:text="${user.rating != null ? user.rating : 0}"></span></div>
+                <button class="contact">메시지보내기</button>
+                <div class="vertical">
+                    <button class="verticalBtn" onclick="verticalClick.call(this)"><img th:src="@{/images/vertical_icon.svg}"></button>
+                    <div class="verticalOption" onmouseleave="verticalOption.call(this)">
+                        <ul>
+                            <li><a>신고하기</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="profileUser">[[${user.Username}]]</div>
+            <div class="profileText">강아지 두 마리 키우고 있어요. 비비랑 씨씨를 키우고 있어요. <br>우리 애들은 안물어요. 걱정 마세요. <br>작업해야함.</div>
+            <ul class="myPetProfile">
+                <li>
+                    <a>
+                        <div class="thumb img">
+                            <img class="verified" th:src="@{/images/verified.svg}">
+                        </div>
+                        <div class="name">비비</div>
+                    </a>
+                </li>
+                <li>
+                    <a>
+                        <div class="thumb img"></div>
+                        <div class="name">씨씨</div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="profileContent contentContainer">
+        <ul class="profileTap">
+            <li class="on">
+                <button>게시물<span class="count">43</span>
+                    <a th:href="@{/gallery/register}"><img th:src="@{/images/plus.svg}"></a>
+                </button>
+            </li>
+            <li>
+                <button>반려동물<span class="count">2</span>
+                    <a><img th:src="@{/images/plus.svg}"></a>
+                </button>
+            </li>
+            <li>
+                <button>메이트<span class="count">2</span></button>
+            </li>
+        </ul>
+
+        <div id="gallery">
+            <ul>
+                <li th:each="dto:${responseDTO.dtoList}">
+                    <a th:href="|@{/gallery/read(galleryId=${dto.galleryId})}&${link}|">
+                        <div class="thumb img"></div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+<!-- content -->
+
+
+<!-- javascript -->
+<script layout:fragment="javascript" th:inline="javascript">
+
+</script>
+<!-- javascript -->
+
+
+</body>
+</html>
