@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface MatchingRoomRepository extends JpaRepository<MatchingRoom, Integer> {
+public interface MatchingRoomRepository extends JpaRepository<MatchingRoom, Long> {
     //매칭방 조회(로그인 회원이 포함된 매칭방)
     @Query(value = "SELECT DISTINCT a.* " +
             "FROM matching_room a LEFT JOIN message b ON a.room_id = b.chat_room_id " +
@@ -15,7 +15,7 @@ public interface MatchingRoomRepository extends JpaRepository<MatchingRoom, Inte
             "AND rp.sender_id = :userId " +
             "ORDER BY IFNULL(b.sent_at, a.created_at) DESC",
             nativeQuery = true)
-    List<MatchingRoom> searchAllMatchingRoom(String keyword,int userId);
+    List<MatchingRoom> searchAllMatchingRoom(String keyword,long userId);
 
     //열린 매칭방만 조회(최근 채팅 정렬)
     @Query(value = "SELECT DISTINCT a.* " +

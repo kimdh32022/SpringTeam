@@ -13,9 +13,9 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Builder
 public class RoomParticipantsDTO {
-    private int roomParticipantsId;
-    private int chatRoomId;
-    private int senderId;
+    private long roomParticipantsId;
+    private long chatRoomId;
+    private long senderId;
     private RoomParticipantsStatus status;
     private Timestamp createdAt;
 }

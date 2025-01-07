@@ -12,9 +12,9 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Builder
 public class MessageDTO {
-    private int messageId;
-    private int chatRoomId;
-    private int senderId;
+    private long messageId;
+    private long chatRoomId;
+    private long senderId;
     private String content;
     private Timestamp sentAt;
     private boolean isRead;

@@ -6,8 +6,8 @@ import com.busanit501.bootproject.dto.MessageDTO;
 import java.util.List;
 
 public interface MessageService {
-    int addMessage(MessageDTO messageDTO);
+    long addMessage(MessageDTO messageDTO);
     void updateMessage(MessageDTO messageDTO);
-    void deleteMessage(int messageId);
-    List<MessageDTO> searchMessage(int roodId);
+    void deleteMessage(long messageId);
+    List<MessageDTO> searchMessage(long roodId);
 }

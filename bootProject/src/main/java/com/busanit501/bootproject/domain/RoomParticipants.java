@@ -18,9 +18,9 @@ import java.sql.Timestamp;
 public class RoomParticipants extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int roomParticipantsId;
+    private long roomParticipantsId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "chatRoomId")
     private MatchingRoom chatRoom;
 
