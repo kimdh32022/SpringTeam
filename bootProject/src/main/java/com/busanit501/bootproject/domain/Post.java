@@ -22,7 +22,7 @@ public class Post extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long postId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)  // 즉시 로딩으로 변경
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
@@ -38,6 +38,9 @@ public class Post extends BaseEntity{
 
     @Column(length = 300)
     private String imageUrl;
+
+    @Column(nullable = false)
+    private int commentCount = 0;
 
     // 댓글과의 관계 설정 (게시글 삭제 시 댓글도 삭제), 테스트 할때 빌더 디폴트 넣음 나중에 빼셈
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
