@@ -5,56 +5,103 @@
 
 <body>
 <div layout:fragment="content" class="container mt-5">
-  <h1 class="mb-4" th:text="${post.title}">게시글 제목</h1>
-  <p th:if="${post == null}">게시글을 불러올 수 없습니다.</p>
+  <!-- 상단 목록으로 돌아가기 버튼 -->
+  <div class="mb-3">
+    <a th:href="@{/posts(page=${page})}" class="btn btn-outline-primary">목록으로</a>
+  </div>
 
-  <p class="text-muted" th:text="'카테고리: ' + ${post.category}"></p>
+  <div class="card mb-5 shadow-sm">
+    <div class="card-body">
+      <div class="text-center mb-4">
+        <img th:if="${post.imageUrl}" th:src="${post.imageUrl}" class="img-fluid rounded" alt="첨부 이미지">
+        <div th:if="${post.imageUrl == null}" class="text-muted py-5">이미지가 없습니다.</div>
+      </div>
 
-  <img th:if="${post.imageUrl}" th:src="${post.imageUrl}" class="img-fluid mb-4" alt="첨부 이미지">
+      <h2 class="card-title" th:text="${post.title}">게시글 제목</h2>
+      <p class="text-muted" th:text="${post.content}">게시글 내용</p>
+      <div class="d-flex justify-content-between align-items-center text-muted">
+        <small th:text="${#temporals.format(post.created_at, 'yyyy.MM.dd')}">작성일</small>
+        <small th:text="'카테고리: ' + ${post.category}"></small>
+      </div>
 
-  <p th:text="${post.content}">게시글 내용</p>
-
-  <!-- 댓글 목록 -->
-  <div class="mt-5">
-    <h3>댓글</h3>
-    <div th:if="${#lists.isEmpty(comments)}">
-      <p>아직 댓글이 없습니다. 첫 번째 댓글을 남겨보세요!</p>
+      <!-- 수정 및 삭제 버튼 -->
+      <div class="text-end mt-4">
+        <div th:if="${post.user.userId == loggedInUserId}">
+          <a th:href="@{'/posts/edit/' + ${post.postId}}" class="btn btn-outline-secondary me-2">수정 및 삭제</a>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <div th:each="comment : ${comments}" class="border p-3 mb-3">
-      <p>
-        <strong th:text="${comment.user.name}">작성자</strong>
-        <span class="text-muted" th:text="${#temporals.format(comment.created_at, 'yyyy-MM-dd')}"></span>
-      </p>
+  <!-- 댓글 섹션 -->
+  <div class="mt-5">
+    <h4>댓글</h4>
 
-      <p th:text="${comment.content}">댓글 내용</p>
-
-      <!-- 삭제 버튼만 남기기 -->
-      <div th:if="${comment.user.userId == loggedInUserId}">
-        <form th:action="@{'/comments/delete/' + ${comment.commentId}}" method="post" class="d-inline">
-          <input type="hidden" name="userId" th:value="${loggedInUserId}">
+    <!-- 댓글 작성 폼 -->
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <form th:action="@{/comments/create}" method="post" class="d-flex">
           <input type="hidden" name="postId" th:value="${post.postId}">
-          <button type="submit" class="btn btn-sm btn-danger">삭제</button>
+          <input type="hidden" name="userId" th:value="${loggedInUserId}">
+          <input type="hidden" name="page" th:value="${page}">
+          <input type="text" class="form-control me-2" name="content" placeholder="댓글을 입력하세요" required>
+          <button type="submit" class="btn btn-dark">등록</button>
         </form>
       </div>
     </div>
 
+    <!-- 댓글 목록 -->
+    <div th:if="${#lists.isEmpty(comments)}">
+      <p class="text-center py-4 text-muted">아직 댓글이 없습니다. 첫 번째 댓글을 남겨보세요!</p>
+    </div>
+
+    <div th:each="comment : ${comments}" class="card shadow-sm mb-3">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <strong th:text="${comment.user.name}">작성자</strong>
+          <small class="text-muted" th:text="${#temporals.format(comment.created_at, 'yyyy.MM.dd')}"></small>
+        </div>
+        <p class="mt-2 mb-0" th:text="${comment.content}">댓글 내용</p>
+
+        <!-- 댓글 삭제 버튼 -->
+        <div class="text-end mt-2" th:if="${comment.user.userId == loggedInUserId}">
+          <form th:action="@{'/comments/delete/' + ${comment.commentId}}" method="post" class="d-inline">
+            <input type="hidden" name="userId" th:value="${loggedInUserId}">
+            <input type="hidden" name="postId" th:value="${post.postId}">
+            <button type="submit" class="btn btn-sm btn-outline-danger">삭제</button>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- 새 댓글 작성 폼 -->
-  <div class="mt-5">
-    <h4>새 댓글 작성</h4>
-    <form th:action="@{/comments/create}" method="post">
-      <input type="hidden" name="postId" th:value="${post.postId}">
-      <input type="hidden" name="userId" th:value="${loggedInUserId}">
-      <input type="hidden" name="page" th:value="${page}">
-      <div class="mb-3">
-        <textarea class="form-control" name="content" rows="3" placeholder="댓글을 입력하세요" required></textarea>
-      </div>
-      <button type="submit" class="btn btn-primary">댓글 작성</button>
-    </form>
+  <!-- 하단 목록으로 돌아가기 버튼 (현재 페이지 정보 포함) -->
+  <div class="mt-5 text-center">
+    <a th:href="@{/posts(page=${page})}" class="btn btn-primary">목록으로</a>
   </div>
 </div>
 
+<!-- 게시글 삭제 스크립트 -->
+<script>
+  function deletePost(postId) {
+    if (confirm("정말로 이 게시글을 삭제하시겠습니까?")) {
+      fetch(`/posts/delete/` + postId, {
+        method: 'DELETE'
+      })
+              .then(response => {
+                if (response.ok) {
+                  alert("게시글이 삭제되었습니다.");
+                  window.location.href = "/posts?page=" + [[${page}]];
+                } else {
+                  alert("삭제 실패: 서버 오류가 발생했습니다.");
+                }
+              })
+              .catch(error => {
+                console.error("Error deleting post:", error);
+                alert("서버와의 통신 중 문제가 발생했습니다.");
+              });
+    }
+  }
+</script>
 </body>
 </html>
