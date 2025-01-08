@@ -1,9 +1,10 @@
 package com.busanit501.bootproject.domain;
 
 import jakarta.persistence.*;
-import lombok.*;
-
-import java.time.LocalDate;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
@@ -11,18 +12,13 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 //@ToString(exclude ="imageSet")
-public class MatchingRooms extends BaseEntity {
+public class ChatingRoom extends BaseEntity {
 
     @Id // PK, 기본키,
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roomId;
 
     private Long hostId;
-
-    private Long userId;
-
-    @Enumerated(EnumType.STRING)
-    private UserStatus userStatus;
 
     private String title;
 
@@ -33,20 +29,11 @@ public class MatchingRooms extends BaseEntity {
     private Long currentParticipants;
 
     @Enumerated(EnumType.STRING)
-    private RoomStatus roomStatus;
+    private Status Status;
 
-    private LocalDate matchingDate;
-
-    private String address;
-
-    public enum UserStatus {
-        PENDING,
-        ACCEPTED,
-        REJECTED
+    public enum Status {
+        Open,
+        CLOSED
     }
-    public enum RoomStatus {
-        PENDING,
-        ACCEPTED,
-        REJECTED
-    }
+
 }
