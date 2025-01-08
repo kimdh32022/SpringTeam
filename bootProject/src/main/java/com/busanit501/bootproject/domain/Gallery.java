@@ -19,7 +19,7 @@ public class Gallery extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
-    private User user;
+    private Users users;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
