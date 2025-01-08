@@ -12,7 +12,7 @@
     <div class="container mt-5">
         <h1>profile화면</h1>
         <div class="text-center mb-4">
-            <img th:src="${users.profilePicture != null ? users.profilePicture : 'https://via.placeholder.com/150'}"
+            <img th:src="@{'/upload/' + ${users.profilePicture} != null ? '/upload/' + ${users.profilePicture} : 'https://via.placeholder.com/150'}"
                  class="rounded-circle" alt="Profile Picture"/>
             <h2 class="mt-2" th:text="${users.name} + '님 어서오세요.'"></h2>
             <form action="/users/update" method="get">
