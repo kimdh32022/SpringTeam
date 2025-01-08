@@ -11,7 +11,7 @@ public interface ChatingRoomService {
     //매칭룸업데이트
     void updateChatingRoom(ChatingRoomDTO matchingRoomDTO);
     void exitChatingRoom(ChatingRoomDTO matchingRoomDTO);
-    void inviteChatingRoom(ChatingRoomDTO matchingRoomDTO);
+    void inviteChatingRoom(ChatingRoomDTO matchingRoomDTO,ChatRoomParticipantsDTO roomParticipantsDTO);
     //매칭룸삭세
     void deleteChatingRoom(long roomId);
     void deleteRoomParticipants(long roomId,long userId);

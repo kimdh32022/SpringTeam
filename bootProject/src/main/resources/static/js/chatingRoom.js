@@ -20,6 +20,7 @@ async function updateAndDelete(exitObj){
     const response = await axios.post(`/chatingRoom/roomUAD`, exitObj);
     return response.data
 }
+
 //채팅 조회
 async function getChatList(roomId){
     const result = await axios.get(`/chatingRoom/chatList/${roomId}`);
@@ -37,9 +38,20 @@ async function deleteMessage(messageId){
     return result.data
 }
 //유저 조회
-async function getUserList(roomId,keyword){
-    const result = await axios.get(`/chatingRoom/userList/${roomId}`,keyword);
-    return  result.data
+// 유저 조회
+async function getUserList(roomId, keyword) {
+    console.log("키워드2 : " + keyword);
+    const result = await axios.get(`/chatingRoom/userList/${roomId}`, {
+        params: { keyword: keyword }  // keyword를 쿼리 파라미터로 전달
+    });
+    return result.data;
+}
+
+
+//채팅방 초대
+async function inviteUser(inviteObj) {
+    const response = await axios.post('/chatingRoom/invite', inviteObj);
+    return response.data
 }
 
 

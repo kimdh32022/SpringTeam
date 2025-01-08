@@ -27,7 +27,7 @@ public class ChatingRoomServiceImpl implements ChatingRoomService {
     @Autowired
     private UserRepostiory userRepostiory;
     @Autowired
-    private ChatRoomParticipantsRepository ChatRoomParticipantsRepository;
+    private ChatRoomParticipantsRepository chatRoomParticipantsRepository;
     private final ModelMapper modelMapper;
 
     @Override
@@ -49,7 +49,7 @@ public class ChatingRoomServiceImpl implements ChatingRoomService {
         roomParticipants.setSender(host); //
 
         // RoomParticipants 저장
-        ChatRoomParticipantsRepository.save(roomParticipants);
+        chatRoomParticipantsRepository.save(roomParticipants);
 
         return savedRoom.getRoomId();
     }
@@ -74,12 +74,30 @@ public class ChatingRoomServiceImpl implements ChatingRoomService {
     }
 
     @Override
-    public void inviteChatingRoom(ChatingRoomDTO chatingRoomDTO) {
+    public void inviteChatingRoom(ChatingRoomDTO chatingRoomDTO, ChatRoomParticipantsDTO chatRoomParticipantsDTO) {
+        // 채팅방 정보를 가져옴
         Optional<ChatingRoom> result = chatingRoomRepository.findById(chatingRoomDTO.getRoomId());
         ChatingRoom chatingRoom = result.orElseThrow();
-        chatingRoom.inviteRoom(chatingRoomDTO.getCurrentParticipants());
+
+        // 현재 참가자 수를 업데이트: 현재 참가자 수에 초대된 사람 수만큼 증가
+        chatingRoom.inviteRoom(chatingRoom.getCurrentParticipants()); // inviteRoom 메소드를 호출하여 참가자 수 증가
+
+        // 채팅방 정보 저장
         chatingRoomRepository.save(chatingRoom);
+
+        // 초대된 유저를 참가자로 추가
+        ChatRoomParticipants participant = ChatRoomParticipants.builder()
+                .chatRoom(chatingRoom)  // 초대된 채팅방 정보 설정
+                .sender(User.builder()
+                        .userId(chatRoomParticipantsDTO.getSenderId()) // 유저 ID로 엔티티 빌드
+                        .build())
+                .build();
+
+        // 참가자 정보 저장
+        chatRoomParticipantsRepository.save(participant);
     }
+
+
 
     @Override
     public void deleteChatingRoom(long roomId) {
@@ -88,7 +106,7 @@ public class ChatingRoomServiceImpl implements ChatingRoomService {
 
     @Override
     public void deleteRoomParticipants(long roomId, long userId) {
-        ChatRoomParticipantsRepository.deleteByRoomIdAndUserId(roomId, userId);
+        chatRoomParticipantsRepository.deleteByRoomIdAndUserId(roomId, userId);
     }
 
     @Override
@@ -114,5 +132,4 @@ public class ChatingRoomServiceImpl implements ChatingRoomService {
 
         return dtoList;
     }
-
 }

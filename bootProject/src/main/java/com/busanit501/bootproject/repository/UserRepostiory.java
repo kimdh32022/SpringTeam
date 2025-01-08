@@ -10,7 +10,7 @@ public interface UserRepostiory extends JpaRepository<User, Long> {
     @Query(value = "SELECT u.* " +
             "FROM user u " +
             "WHERE u.user_id NOT IN (SELECT rp.sender_id " +
-            "FROM room_participants rp " +
+            "FROM chat_room_participants rp " +
             "WHERE rp.chat_room_id = :roomId) " +
             "AND u.name like concat('%', :keyword, '%') "
             ,nativeQuery = true)

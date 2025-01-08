@@ -1,5 +1,6 @@
 package com.busanit501.bootproject.controller;
 
+import com.busanit501.bootproject.domain.ChatingRoom;
 import com.busanit501.bootproject.dto.ChatingRoomDTO;
 import com.busanit501.bootproject.dto.MessageDTO;
 import com.busanit501.bootproject.dto.ChatRoomRegisterDTO;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -56,11 +58,29 @@ public class ChatingRoomController {
         Map<String, Long> map = Map.of("UserId",chatRoomRegisterDTO.getChatRoomParticipantsDTO().getSenderId());
         return map;
     }
-//    @ResponseBody
-//    @PostMapping("/invite")
-//    public Map<String,Long> inviteUser(@RequestBody UserDTO userDTO) {
-//        return map;
-//    }
+    @ResponseBody
+    @PostMapping("/invite")
+    public List<Map<String, Long>> inviteUsers(@RequestBody List<ChatRoomRegisterDTO> chatRoomRegisterDTOList) {
+        List<Map<String, Long>> responseList = new ArrayList<>();
+
+        for (ChatRoomRegisterDTO chatRoomRegisterDTO : chatRoomRegisterDTOList) {
+            log.info("Processing ChatRoomRegisterDTO: " + chatRoomRegisterDTO);
+
+            // 초대 처리: 채팅방에 유저를 초대하는 서비스 호출
+            chatingRoomService.inviteChatingRoom(
+                    chatRoomRegisterDTO.getChatingRoomDTO(),
+                    chatRoomRegisterDTO.getChatRoomParticipantsDTO()
+            );
+
+            // 처리 결과 저장
+            Map<String, Long> result = Map.of("UserId", chatRoomRegisterDTO.getChatRoomParticipantsDTO().getSenderId());
+            responseList.add(result);
+        }
+
+        return responseList;
+    }
+
+
     //매칭방 수정
     @ResponseBody
     @PutMapping("/{roomId}")
@@ -113,7 +133,7 @@ public class ChatingRoomController {
     @GetMapping("/userList/{roomId}")
     public List<UserDTO> getUserList(@RequestParam(required = false, defaultValue = "") String keyword,
                                      @PathVariable("roomId") long roomId){
-        log.info("keyword : " + keyword);
+        log.info("키워드3 : " + keyword);
         log.info("roomId : " + roomId);
         List<UserDTO> list = userService.searchInviteUser(keyword, roomId);
         log.info("초대가능한 유저 리스트 : " + list);

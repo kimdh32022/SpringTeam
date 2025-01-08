@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
         log.info("searchInviteUser keyword: " + keyword);
         log.info("searchInviteUser roomId: " + roomId);
         List<User> users = userRepostiory.searchInviteUserList(keyword,roomId);
-        log.info("users 77 : " + users);
+        log.info("users  : " + users);
         List<UserDTO> dtoList = new ArrayList<>();
         for (User user : users) {
             UserDTO dto = UserDTO.builder()

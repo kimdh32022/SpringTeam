@@ -13,8 +13,8 @@ public class UserServiceTest {
 
     @Test
     public void searchUserTest() {
-        String keyword = "";
-        long roomId = 6;
+        String keyword = "2";
+        long roomId = 2;
         var users = userService.searchInviteUser(keyword, roomId);
 
         users.forEach(user -> {

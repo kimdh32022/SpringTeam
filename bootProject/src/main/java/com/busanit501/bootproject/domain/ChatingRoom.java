@@ -20,7 +20,7 @@ import java.util.Set;
 public class ChatingRoom extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int roomId;
+    private Long roomId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hostId")

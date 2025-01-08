@@ -550,6 +550,8 @@
     let currentRoomId = null;
     let refreshInterval = null; // Interval ID 저장 변수
 
+    let currentRoomInfo = null;
+
     document.querySelectorAll(".chat-preview").forEach(chatPreview => {
         chatPreview.addEventListener("click", function () {
             const newRoomId = this.closest(".chatInfo").querySelector("h4:nth-of-type(1)").innerText.trim();
@@ -559,6 +561,16 @@
                 currentRoomId = newRoomId;
                 console.log(`방 번호: ${currentRoomId}`);
 
+                // 방 정보 초기화 및 새로운 정보로 설정
+                currentRoomInfo = {
+                    roomId: newRoomId,
+                    roomTitle: this.closest(".chatInfo").querySelector("h4:nth-of-type(3)").innerText,
+                    hostId: this.closest(".chatInfo").querySelector("h4:nth-of-type(2)").innerText,
+                    currentParticipants: this.closest(".chatInfo").querySelector("h4:nth-of-type(5)").innerText,
+                    maxParticipants: this.closest(".chatInfo").querySelector("h4:nth-of-type(6)").innerText,
+                };
+
+                console.log("현재 방 정보:", currentRoomInfo);
                 // 이전 Interval 제거
                 if (refreshInterval !== null) {
                     clearInterval(refreshInterval);
@@ -618,7 +630,15 @@
     }
 
     // 메시지 전송 및 채팅 새로고침
-    document.querySelector("#sendMessageButton").addEventListener("click", async () => {
+    document.querySelector("#sendMessageButton").addEventListener("click", sendMessage);
+    document.querySelector("#chatMessageInput").addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {  // 엔터 키가 눌렸을 때
+            event.preventDefault();  // 기본 동작인 줄 바꿈을 방지
+            sendMessage();
+        }
+    });
+
+    async function sendMessage() {
         if (!currentRoomId) {
             return alert("채팅방을 먼저 선택해주세요.");
         }
@@ -630,14 +650,17 @@
         const messageObj = {
             senderId: 1,
             content: messageContent,
-            chatRoomId: currentRoomId };
+            chatRoomId: currentRoomId
+        };
+
         addMessage(messageObj)
             .then(() => {
                 messageInput.value = "";  // 메시지 입력창 초기화
                 loadChatMessages(currentRoomId);  // 채팅 새로고침
             })
             .catch(e => alert("메시지 작성 중 오류 발생"));
-    });
+    }
+
 
     // 친구 초대 모달
     const inviteModal = new bootstrap.Modal(document.querySelector(".inviteModal"));
@@ -652,28 +675,69 @@
         fetchUserList(); // 유저 목록 초기 로드
     });
 
-    // 초대 버튼 클릭
+    // 초대 버튼 클릭 시 실행
     inviteBtn.addEventListener("click", function () {
         const selectedUsers = Array.from(
             document.querySelectorAll('.friend-item input[type="checkbox"]:checked')
-        ).map(checkbox => checkbox.value);
-        console.log("초대할 유저 목록:", selectedUsers);
-        // TODO: 초대 로직 추가
+        ).map(checkbox => checkbox.value);  // 체크박스에서 선택된 value 값을 가져옴
+
+        console.log("선택된 유저 ID들:", selectedUsers); // 유저 ID들 확인
+
+        if (selectedUsers.length === 0) {
+            alert("초대할 유저를 선택하세요.");
+            return;
+        }
+
+        // 최대 인원과 현재 인원 차이 계산
+        const availableSlots = currentRoomInfo.maxParticipants - currentRoomInfo.currentParticipants;
+
+        if (selectedUsers.length > availableSlots) {
+            alert("초대할 수 있는 인원이 초과되었습니다. 남은 자리는 " + availableSlots + "명입니다.");
+            return;  // 초대 진행하지 않음
+        }
+
+        // 초대할 유저들 정보를 서버에 전달할 객체 생성
+        const inviteObj = selectedUsers.map(userId => ({
+            chatingRoomDTO: {
+                roomId: currentRoomId,       // 현재 채팅방 ID
+                currentParticipants: currentRoomInfo.currentParticipants,
+                maxParticipants: currentRoomInfo.maxParticipants
+            },
+            chatRoomParticipantsDTO: {
+                chatRoomId: currentRoomId,    // 현재 채팅방 ID
+                senderId: userId              // 초대할 유저 ID
+            }
+        }));
+
+        console.log("초대할 유저 목록:", inviteObj);
+        inviteUser(inviteObj)
+            .then(result => {
+                alert("초대를 완료 했습니다.");
+                location.reload();  // 페이지 새로고침
+            })
+            .catch(e => alert("초대 중 오류 발생"));
     });
+
+
+
+
 
     // 유저 검색
     searchInput.addEventListener("input", function () {
         const keyword = searchInput.value.trim();
-        fetchUserList(keyword); // 검색 키워드에 따라 유저 목록 갱신
+        console.log("검색어1 :", keyword);
+        fetchUserList(keyword);  // 검색 키워드에 따라 유저 목록 갱신
     });
+
 
     // 유저 목록 가져오기 및 렌더링
     async function fetchUserList(keyword) {
-        const roomId = 6; // 현재 방 ID (테스트 값)
+        if (!currentRoomId) {
+            return alert("채팅방을 먼저 선택해주세요.");
+        }
         try {
-            console.log(`Fetching user list for roomId: ${roomId}, keyword: ${keyword}`);
-            const userList = await getUserList(roomId, keyword);
-            console.log("Fetched user list:", userList); // 디버깅용 출력
+            const userList = await getUserList(currentRoomId, keyword);
+            console.log(userList)
             renderUserList(userList);
         } catch (error) {
             console.error("유저 목록 가져오기 실패:", error);
@@ -682,18 +746,20 @@
 
     // 유저 목록 렌더링
     function renderUserList(userList) {
+        const friendListContainer = document.querySelector(".friend-list");
         friendListContainer.innerHTML = ""; // 기존 목록 초기화
         if (userList.length === 0) {
             friendListContainer.innerHTML = '<p class="text-muted">검색 결과가 없습니다.</p>';
             return;
         }
         userList.forEach(user => {
+            console.log("유저 ID:", user.userId); // 유저 ID 확인
             const userItem = document.createElement("div");
             userItem.classList.add("friend-item", "d-flex", "align-items-center", "mb-2");
             userItem.innerHTML = `
-                <input type="checkbox" id="friend-${user.id}" value="${user.id}" class="me-2">
-                <label for="friend-${user.id}" class="mb-0">${user.name}</label>
-            `;
+            <input type="checkbox" id="friend-${user.userId}" value="${user.userId}" class="me-2">
+            <label for="friend-${user.userId}" class="mb-0">${user.name}</label>
+        `;
             friendListContainer.appendChild(userItem);
         });
     }
