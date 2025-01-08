@@ -89,7 +89,7 @@
                 <!--                추가 작업, 이제는 게시글에 BoardDTO , 게시글, 댓글 갯수, 첨부 이미지들 다있음.-->
                 <!--                꺼내서, 보여주기. -->
                 <th:block th:each="fileName : ${dto.fileNames}">
-                    <div class="card col-4" th:with="arr = ${fileName.split('_')}">
+                    <div class="card col-4">
                         <div class="card-header d-flex justify-content-center">
                             [[${arr[1]}]]
                             <button class="btn-sm btn-danger"

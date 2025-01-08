@@ -18,7 +18,6 @@ import java.util.Set;
 public class Member extends BaseEntity {
     @Id
     private String mid;
-
     private String mpw;
     private String email;
     private boolean del;
