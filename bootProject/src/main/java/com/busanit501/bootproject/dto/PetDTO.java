@@ -21,4 +21,5 @@ public class PetDTO {
     private float weight;
     private String profilePicture;
     private boolean isVerified;
+
 }

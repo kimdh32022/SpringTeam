@@ -3,7 +3,6 @@ package com.busanit501.bootproject.service.Impl;
 import com.busanit501.bootproject.domain.Pets;
 import com.busanit501.bootproject.domain.Users;
 import com.busanit501.bootproject.dto.PetDTO;
-import com.busanit501.bootproject.dto.PetSaveDTO;
 import com.busanit501.bootproject.dto.UserDTO;
 import com.busanit501.bootproject.repository.PetRepository;
 import com.busanit501.bootproject.repository.UserRepository;
@@ -25,6 +24,8 @@ public class PetServiceImpl implements PetService {
     private UserService userService;
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private UserRepository userRepository;
 
     // 펫 등록
     @Override
@@ -50,29 +51,6 @@ public class PetServiceImpl implements PetService {
         // 저장된 엔티티를 다시 DTO로 변환
         return modelMapper.map(savedPet, PetDTO.class);
     }
-//    @Override
-//    public PetDTO registerPet(PetSaveDTO petSaveDTO) {
-//        // 사용자 ID를 기반으로 UserDTO 객체 가져오기
-//        UserDTO userDTO = userService.getUserById(petSaveDTO.getUserId());
-//        if (userDTO == null) {
-//            throw new RuntimeException("사용자를 찾을 수 없습니다."); // 사용자 검증
-//        }
-//
-//        // DTO에서 Pets 엔티티로 변환
-//        Pets pet = modelMapper.map(petSaveDTO, Pets.class); // PetDTO에서 Pets 엔티티로 변환
-//
-//        // UserDTO에서 Users 엔티티로 변환
-//        Users user = modelMapper.map(userDTO, Users.class); // UserDTO에서 Users 엔티티로 변환
-//
-//        // Pets 엔티티에 사용자 설정
-//        pet.setUsers(user);
-//
-//        // 엔티티 저장
-//        Pets savedPet = petRepository.save(pet);
-//
-//        // 저장된 엔티티를 다시 DTO로 변환
-//        return modelMapper.map(savedPet, PetDTO.class);
-//    }
 
     //펫 수정
     @Override
@@ -105,5 +83,16 @@ public class PetServiceImpl implements PetService {
         return petRepository.findAll().stream()
                 .map(pet -> modelMapper.map(pet, PetDTO.class)) // 엔티티를 DTO로 변환
                 .collect(Collectors.toList()); // 리스트로 변환
+    }
+
+    // 사용자 ID로 펫 조회
+    @Override
+    public List<Pets> getPetsByUserId(Long userId) {
+        // userId로 Users 객체를 가져오기
+        Users user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+
+        // Users 객체를 기준으로 Pets 리스트 조회
+        return petRepository.findByUsers(user);
     }
 }

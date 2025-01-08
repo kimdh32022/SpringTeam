@@ -1,7 +1,7 @@
 package com.busanit501.bootproject.controller;
 
+import com.busanit501.bootproject.domain.Pets;
 import com.busanit501.bootproject.dto.PetDTO;
-import com.busanit501.bootproject.dto.PetSaveDTO;
 import com.busanit501.bootproject.dto.UserDTO;
 import com.busanit501.bootproject.service.PetService;
 import com.busanit501.bootproject.service.UserService;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 
 @Log4j2
@@ -73,6 +74,7 @@ public class UserController {
     public String profilePage(@RequestParam Long userId, Model model) {
         UserDTO user = userService.getUserById(userId); // DB에서 최신 데이터 가져오기
         model.addAttribute("users", user);
+        model.addAttribute("pets", petService.getAllPets());
         return "/user/profile"; // 프로필 페이지 템플릿
     }
 
@@ -112,18 +114,25 @@ public class UserController {
         return ResponseEntity.ok().body(Map.of("exists", exists));
     }
 
-@PostMapping("/pet/register")
-public ResponseEntity<String> addPet(@RequestBody PetDTO petDTO) {
-    petService.registerPet(petDTO);
+    // 펫등록페이지 호출
+    @GetMapping("/pet/register")
+    public String registerPet(Model model) {
+        model.addAttribute("petDTO", new PetDTO()); // 빈 객체를 모델에 추가
+        return "pet/register"; // templates/pet/register.html로 이동
+    }
 
-    // 응답 헤더에 content-type을 UTF-8로 설정
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
-    headers.add(HttpHeaders.CONTENT_TYPE, "application/json; charset=UTF-8");
+    @PostMapping("/pet/register")
+    public String registerPet(@ModelAttribute PetDTO petDTO, RedirectAttributes redirectAttributes) {
+        petService.registerPet(petDTO);
+        session.setAttribute("pets", petDTO);
+        return "redirect:/users/profile?userId=" + petDTO.getUserId();
+    }
 
-    // JSON 응답을 반환
-    return new ResponseEntity<>("{\"message\": \"반려견 정보가 성공적으로 저장되었습니다.\", \"success\": true}", headers, HttpStatus.OK);
-}
+    @GetMapping("/users/pets")
+    public ResponseEntity<List<Pets>> getPetsForUser(@RequestParam Long userId) {
+        List<Pets> pets = petService.getPetsByUserId(userId); // 유저 ID에 해당하는 강아지 목록을 가져옵니다.
+        return ResponseEntity.ok(pets);
+    }
 
     @GetMapping("/main")
     public String mainPage(Model model) {
