@@ -29,10 +29,7 @@ public class CalendarController {
                 return "calendar";
         }
 
-        @GetMapping("/api/calendar/events")
-        public List<CalendarDTO> getCalendarEvents() {
-                return calendarService.getAllCalendars();
-        }
+
 
 
 

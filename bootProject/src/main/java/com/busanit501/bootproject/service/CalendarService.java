@@ -12,8 +12,11 @@ public interface CalendarService {
     CalendarDTO readOne(Long id);
     void update(CalendarDTO calendarDTO);
     void delete(Long id);
-
     List<CalendarDTO> getAllCalendars();
+    List<CalendarDTO> getUserCalendars(Long userId);
+
+    void updateScheduledEvents();
+
 
     default Calendar dtoToEntity(CalendarDTO dto) {
         // 박스에서 꺼내서, 디비 타입(Entity) 변경.

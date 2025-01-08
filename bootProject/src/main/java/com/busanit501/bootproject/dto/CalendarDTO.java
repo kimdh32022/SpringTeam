@@ -25,4 +25,6 @@ public class CalendarDTO {
     private LocalDateTime createdAt;  // 일정 생성 시간
     private LocalDateTime updatedAt;  // 일정 수정 시간
 
+
+    private String walkDateIso; // UTC로 변환된 날짜 (ISO 8601 포맷)
 }

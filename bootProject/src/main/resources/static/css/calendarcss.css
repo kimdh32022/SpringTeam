@@ -10,18 +10,70 @@ body {
     font-size: 14px;
 }
 
-#calendar {
-    max-width: 1500px;
-    display: flex;
-    margin: 0 auto;
-    margin-top: 5%;
-}
+/*#calendar {*/
+/*    max-width: 700px;*/
+/*    display: flex;*/
+/*    margin: 0 auto;*/
+/*    margin-top: 5%;*/
+/*}*/
 
 
 #mainContent {
     width: 80%;
     margin: 3%;
 }
+
+#calendar-container {
+    margin-top: 30px;
+    border-top: 1px solid #ccc;
+    /*border-top: 1px solid #ccc;*/
+    min-width: 1100px;
+    display: flex;
+    justify-content: space-between;
+    /*border-top: 1px solid #ccc;*/
+    padding-top: 20px;
+    /*margin-top: 10%;*/
+}
+
+#calendar {
+    min-width: 700px;
+    max-width: 70%;
+    margin-left: 30px;
+
+
+}
+
+#eventDetails {
+    width: 25%;
+    padding: 20px;
+    border-left: 1px solid #ccc;
+    /*border-radius: 5px;*/
+    /*background-color: #f9f9f9;*/
+}
+
+#eventDetails h3 {
+    margin-bottom: 15px;
+}
+
+#eventInfo p {
+    margin: 5px 0;
+}
+
+#addEventButton {
+    display: block;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#addEventButton:hover {
+    background-color: #45a049;
+}
+
 
 
 .fc-day-sun .fc-col-header-cell-cushion {
@@ -62,6 +114,51 @@ body {
 #contextMenu a:hover {
     background-color: #f5f5f5;
 }
+
+/*------------------------*/
+/* 모달 기본 스타일 */
+.custom-modal {
+    display: none; /* 기본적으로 숨김 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 배경 어둡게 */
+    z-index: 1000; /* 다른 콘텐츠 위에 표시 */
+    justify-content: center;
+    align-items: center;
+}
+
+.custom-modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    width: 300px;
+}
+
+.custom-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.custom-modal-body {
+    margin-top: 10px;
+}
+
+.custom-modal-footer {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
 
 
 

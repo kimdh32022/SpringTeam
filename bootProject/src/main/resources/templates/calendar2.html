@@ -1,108 +1,234 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/base.html}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-<!--    <link rel="stylesheet" th:href="@{/css/base.css}">-->
+    <title>산책 일정</title>
+    <link rel="stylesheet" th:href="@{/css/calendarcss.css}">
 </head>
-
-<style>
-
-    body {
-        margin: 40px 10px;
-        padding: 0;
-        font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-        font-size: 14px;
-    }
-
-    #calendar {
-        max-width: 1100px;
-        margin: 0 auto;
-    }
-
-</style>
-
-
 <body>
-<div id="calendar-container" class="container-fluid">
-    <div id="calendar"></div>
+
+<div layout:fragment="content">
+
+    <!-- 캘린더 -------------------------------->
+    <div id="calendar-container" class="container-fluid">
+        <div id="calendar"></div>
+        <!-- 달력 오른쪽에 일정 추가 및 상세 내용 표시 영역 -->
+        <div id="eventDetails">
+            <h3>일정 정보</h3>
+            <div id="eventInfo">
+                <p><strong>제목:</strong> <span id="modalTitle">-</span></p>
+                <p><strong>날짜:</strong> <span id="modalDate">-</span></p>
+                <p><strong>시간:</strong> <span id="modalTime">-</span></p>
+                <p><strong>수정된 날짜:</strong> <span id="modalModDate">-</span></p>
+            </div>
+            <button type="button" id="addEventButton">일정 추가</button>
+        </div>
+    </div>
+
+    <!-- 일정 추가 -------------------------------->
+    <div id="contextMenu">
+        <a href="#" id="addEvent">일정 추가</a>
+    </div>
+    <!-- 오른쪽 일정-------------------------------->
+
+    <!-- 모달 -------------------------------->
+    <!--    <div id="eventModal" class="custom-modal">-->
+    <!--        <div class="custom-modal-content">-->
+    <!--            <div class="custom-modal-header">-->
+    <!--                <h5>이벤트 상세 정보</h5>-->
+    <!--                <button type="button" id="closeModal" class="close-button">&times;</button>-->
+    <!--            </div>-->
+    <!--            <div class="custom-modal-body">-->
+    <!--                <p><strong>제목:</strong> <span id="modalTitle"></span></p>-->
+    <!--                <p><strong>날짜:</strong> <span id="modalDate"></span></p>-->
+    <!--                <p><strong>시간:</strong> <span id="modalTime"></span></p>-->
+    <!--                <p><strong>수정된 날짜:</strong> <span id="modalModDate"></span></p>-->
+    <!--            </div>-->
+    <!--            <div class="custom-modal-footer">-->
+    <!--                <button type="button" id="closeModalFooter" class="close-button">닫기</button>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
+    <!-------------------------------------------------->
+
+
+
+    <!-- FullCalendar -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+    <!-- 이벤트 스크립트 -->
+    <script>
+
+
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+                },
+                navLinks: true,
+                businessHours: true,
+                editable: true,
+                selectable: true,
+                events: [],  // 초기 일정을 빈 배열로 설정
+                // timeZone: 'local',  // 타임존 설정 (예: 로컬 타임존)
+                select: function (info) {
+                    selectedDate = info.startStr; // 선택된 날짜 저장
+                    // console.log('선택된 날짜:', selectedDate);
+                },
+                eventClick: function (info) {
+                    //틀--------------------------------------
+                    // 새 창으로 일정 상세 보기
+                    // const eventId = info.event.id; // 고유 ID 사용 (필요시 설정)
+                    // openEventDetailPopup(info.event);
+                    //방법1----------------------------------
+                    //                 alert(`
+                    //     제목: ${info.event.title}
+                    //     날짜: ${info.event.start.toLocaleDateString()}
+                    //     시간: ${info.event.extendedProps.time || 'N/A'}
+                    //     수정된 날짜: ${info.event.extendedProps.modDate || 'N/A'}
+                    // );
+
+                    // 방법2 모달
+                    // 모달로 이벤트를 전달
+                    const eventDetails = {
+                        title: info.event.title,
+                        date: info.event.start.toLocaleDateString(),
+                        time: info.event.extendedProps.time || 'N/A',
+                        modDate: info.event.extendedProps.modDate || 'N/A'
+                    };
+
+                    // 모달에 내용 삽입
+                    document.getElementById('modalTitle').innerText = eventDetails.title;
+                    document.getElementById('modalDate').innerText = eventDetails.date;
+                    document.getElementById('modalTime').innerText = eventDetails.time;
+                    document.getElementById('modalModDate').innerText = eventDetails.modDate;
+
+                    // 모달 띄우기
+                    document.getElementById('eventModal').style.display = 'flex';
+                }
+
+            });
+            calendar.render();
+
+            // 모달 닫기 버튼 클릭 시 모달 숨기기
+            document.getElementById('closeModal').addEventListener('click', function () {
+                document.getElementById('eventModal').style.display = 'none';
+            });
+
+            document.getElementById('closeModalFooter').addEventListener('click', function () {
+                document.getElementById('eventModal').style.display = 'none';
+            });
+
+            // // 페이지에서 클릭하면 모달 숨기기
+            // document.addEventListener('click', function (e) {
+            //     var modal = document.getElementById('eventModal');
+            //     // 모달 외부를 클릭했을 때만 모달 닫기
+            //     if (!modal.contains(e.target)) {
+            //         modal.style.display = 'none';
+            //     }
+            // });
+            //
+            // // 모달 내부 클릭 시 모달이 닫히지 않도록 이벤트 전파 막기
+            // document.getElementById('eventModal').addEventListener('click', function (e) {
+            //     e.stopPropagation(); // 모달 내부를 클릭하면 이벤트 전파를 막음
+            // });
+
+            //---------------------------------------------------
+            // 비동기로 서버에서 데이터 가져오기
+            fetch('/api/calendar/events')
+                .then(response => response.json())  // JSON 형식으로 변환
+                .then(events => {
+                    console.log(events);
+                    events.forEach(event => {
+                        var eventDate = new Date(event.walkDateIso);
+                        // const formattedTime = formatTime(event.walkTime);
+                        // UTC로 변환된 날짜 사용
+                        calendar.addEvent({
+                            title: event.schedulename,
+                            start: eventDate, // 변환된 로컬 시간
+                            allDay: true,
+                            extendedProps: {
+                                time: event.walkTime || 'N/A',  // 시간 정보
+                                // time: formattedTime, // 포맷된 시간
+                                modDate: event.modDate || 'N/A' // 수정된 날짜 정보
+                            }
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('일정 데이터 로딩 실패:', error);
+                });
+            //---------------------------------------------------
+
+
+            // 오른쪽 클릭 메뉴 표시
+            var contextMenu = document.getElementById('contextMenu');
+            calendarEl.addEventListener('contextmenu', function (event) {
+                if (selectedDate) {
+                    event.preventDefault(); // 기본 오른쪽 클릭 메뉴 방지
+                    var x = event.clientX;
+                    var y = event.clientY;
+
+                    contextMenu.style.left = x + 'px';
+                    contextMenu.style.top = y + 'px';
+                    contextMenu.style.display = 'block';
+
+                    // 일정 db에 저장하기
+                    document.getElementById('addEvent').onclick = function () {
+                        var eventTitle = prompt('이벤트 제목을 입력하세요:');
+                        if (eventTitle) {
+                            calendar.addEvent({
+                                title: eventTitle,
+                                start: selectedDate,
+                                allDay: false,
+                                extendedProps: {
+                                    time: 'N/A', // 시간은 입력받지 않으면 기본값 'N/A'
+                                }
+                            });
+
+                            var eventData = {
+                                schedulename: eventTitle,
+                                walkDate: selectedDate,
+                                walkTime: 'N/A' // 시간은 기본값 'N/A'
+                            };
+
+                            // 서버로 데이터 전송 (fetch API)
+                            fetch('/api/calendar/add', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(eventData)
+                            })
+                                .then(response => {
+                                    if (response.ok) {
+                                        console.log('일정 추가 성공');
+                                    } else {
+                                        console.error('일정 추가 실패');
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('서버 요청 실패:', error);
+                                });
+                        }
+                        contextMenu.style.display = 'none';  // 메뉴 숨기기
+                    };
+
+                }
+            });
+
+            // 페이지 어디서든 마우스 우클릭시 메뉴 숨기기
+            document.addEventListener('click', function (e) {
+                contextMenu.style.display = 'none';
+            });
+
+
+        });
+    </script>
 </div>
 </body>
-
-
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.5/index.global.min.js"></script>
-<script>
-
-    document.addEventListener('DOMContentLoaded', function() {
-        var calendarEl = document.getElementById('calendar');
-
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
-            },
-            initialDate: '2023-01-12',
-            navLinks: true, // can click day/week names to navigate views
-            businessHours: true, // display business hours
-            editable: true,
-            selectable: true,
-            events: [
-                {
-                    title: 'Business Lunch',
-                    start: '2023-01-03T13:00:00',
-                    constraint: 'businessHours'
-                },
-                {
-                    title: 'Meeting',
-                    start: '2024-12-13T11:00:00',
-                    constraint: 'availableForMeeting', // defined below
-                    color: '#257e4a'
-                },
-                {
-                    title: 'Conference',
-                    start: '2024-12-18',
-                    end: '2023-01-20'
-                },
-                {
-                    title: 'Party',
-                    start: '2024-12-29T20:00:00'
-                },
-
-                // areas where "Meeting" must be dropped
-                {
-                    groupId: 'availableForMeeting',
-                    start: '2024-12-11T10:00:00',
-                    end: '2024-12-11T16:00:00',
-                    display: 'background'
-                },
-                {
-                    groupId: 'availableForMeeting',
-                    start: '2024-12-13T10:00:00',
-                    end: '2024-12-13T16:00:00',
-                    display: 'background'
-                },
-
-                // red areas where no events can be dropped
-                {
-                    start: '2024-12-24',
-                    end: '2024-12-28',
-                    overlap: false,
-                    display: 'background',
-                    color: '#ff9f89'
-                },
-                {
-                    start: '2024-12-06',
-                    end: '2024-01-08',
-                    overlap: false,
-                    display: 'background',
-                    color: '#ff9f89'
-                }
-            ]
-        });
-
-        calendar.render();
-    });
-
-</script>
 </html>

@@ -1,0 +1,77 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="ko">-->
+<!--<head>-->
+<!--  <meta charset="UTF-8">-->
+<!--  <title>일정 상세 보기</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="eventModalLabel"-->
+<!--     aria-hidden="true">-->
+<!--    <div class="modal-dialog" role="document">-->
+<!--        <div class="modal-content">-->
+<!--            <div class="modal-header">-->
+<!--                <h5 class="modal-title" id="eventModalLabel">이벤트 상세 정보</h5>-->
+<!--                <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+<!--                    <span aria-hidden="true">&times;</span>-->
+<!--                </button>-->
+<!--            </div>-->
+<!--            <div class="modal-body">-->
+<!--                <p><strong>제목:</strong> <span id="modalTitle"></span></p>-->
+<!--                <p><strong>날짜:</strong> <span id="modalDate"></span></p>-->
+<!--                <p><strong>시간:</strong> <span id="modalTime"></span></p>-->
+<!--                <p><strong>수정된 날짜:</strong> <span id="modalModDate"></span></p>-->
+<!--            </div>-->
+<!--            <div class="modal-footer">-->
+<!--                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--<script>-->
+
+
+<!--    // URL에서 데이터 가져오기-->
+<!--    const params = new URLSearchParams(window.location.search);-->
+
+<!--    // 모달의 각 요소에 데이터 넣기-->
+<!--    document.getElementById('modalTitle').innerText = params.get('title');-->
+<!--    document.getElementById('modalDate').innerText = params.get('date');-->
+<!--    document.getElementById('modalTime').innerText = params.get('time');-->
+<!--    document.getElementById('modalModDate').innerText = params.get('modDate');-->
+
+<!--    // 페이지 로드 시 모달 자동으로 열기-->
+<!--    $(document).ready(function() {-->
+<!--        $('#eventModal').modal('show');-->
+<!--    });-->
+
+
+<!--  // // URL에서 데이터 가져오기-->
+<!--  // const params = new URLSearchParams(window.location.search);-->
+<!--  // const eventId = params.get('eventId');-->
+<!--  //-->
+<!--  // // 서버로부터 이벤트 데이터를 가져오는 예제-->
+<!--  // fetch(`/api/calendar/events/${eventId}`)-->
+<!--  //         .then(response => response.json())-->
+<!--  //         .then(event => {-->
+<!--  //           // document.getElementById('title').textContent = event.title;-->
+<!--  //           // document.getElementById('start').textContent = new Date(event.start).toLocaleString();-->
+<!--  //           // document.getElementById('end').textContent = event.end-->
+<!--  //           //         ? new Date(event.end).toLocaleString()-->
+<!--  //           //         : '없음';-->
+<!--  //-->
+<!--  //           events.forEach(event => {-->
+<!--  //             // 서버에서 전달된 데이터 사용-->
+<!--  //             var eventDate = new Date(event.walkDateIso);  // ISO 형식의 날짜를 변환-->
+<!--  //             calendar.addEvent({-->
+<!--  //               title: event.schedulename + " - " + event.walkTime, // 이름과 시간 표시-->
+<!--  //               start: eventDate,  // 이벤트 날짜-->
+<!--  //               allDay: true  // 하루 종일 여부-->
+<!--  //             });-->
+<!--  //           });-->
+<!--  //         })-->
+<!--  //         .catch(error =>-->
+<!--  //                 console.error('일정 데이터를 가져오는 데 실패했습니다:', error));-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->

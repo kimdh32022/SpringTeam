@@ -34,6 +34,9 @@ public class Calendar extends BaseEntity {
     @Column(name = "walk_time", nullable = false)
     private LocalTime walkTime;  // 산책 시간
 
+    @Column(name = "walk_place", nullable = false)
+    private String walkPlace;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default
