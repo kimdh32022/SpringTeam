@@ -116,8 +116,7 @@ public class UserController {
 
     // 펫등록페이지 호출
     @GetMapping("/pet/register")
-    public String registerPet(Model model) {
-        model.addAttribute("petDTO", new PetDTO()); // 빈 객체를 모델에 추가
+    public String registerPet() {
         return "pet/register"; // templates/pet/register.html로 이동
     }
 

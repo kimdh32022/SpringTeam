@@ -8,25 +8,25 @@
 <!-- content -->
 <div layout:fragment="content">
     <h1>펫 등록</h1>
-    <form th:action="@{/pet/register}" th:object="${petDTO}" method="post" id="register-form">
+    <form th:action="@{/pet/register}" method="post" id="register-form">
         <div class="form-group">
-            <label for="name">펫 이름</label>
-            <input type="text" id="name" th:field="*{name}" placeholder="펫 이름" required class="form-control">
+            <label for="petname">펫 이름</label>
+            <input type="text" id="petname" placeholder="펫 이름" required class="form-control">
         </div>
 
         <div class="form-group">
-            <label for="type">펫 종류</label>
-            <input type="text" id="type" th:field="*{type}" placeholder="펫 종류 (예: 강아지, 고양이)" required class="form-control">
+            <label for="pettype">펫 종류</label>
+            <input type="text" id="pettype" placeholder="펫 종류 (예: 강아지, 고양이)" required class="form-control">
         </div>
 
         <div class="form-group">
-            <label for="birth">생년월일</label>
-            <input type="date" id="birth" th:field="*{birth}" required class="form-control">
+            <label for="petbirth">생년월일</label>
+            <input type="date" id="petbirth" required class="form-control">
         </div>
 
         <div class="form-group">
-            <label for="gender">성별</label>
-            <select id="gender" th:field="*{gender}" required class="form-control">
+            <label for="petgender">성별</label>
+            <select id="petgender" required class="form-control">
                 <option value="" disabled selected>성별 선택</option>
                 <option value="MALE">남</option>
                 <option value="FEMALE">여</option>
@@ -35,27 +35,28 @@
 
         <div class="form-group">
             <label for="personality">성격</label>
-            <textarea id="personality" th:field="*{personality}" placeholder="펫의 성격을 입력하세요" class="form-control"></textarea>
+            <textarea id="personality" placeholder="펫의 성격을 입력하세요" class="form-control"></textarea>
         </div>
 
         <div class="form-group">
             <label for="weight">몸무게 (kg)</label>
-            <input type="number" id="weight" th:field="*{weight}" placeholder="펫 몸무게" step="0.01" required class="form-control">
+            <input type="number" id="weight" placeholder="펫 몸무게" step="0.01" required class="form-control">
         </div>
 
         <div class="form-group">
-            <label for="profilePicture">프로필 사진 URL</label>
-            <input type="url" id="profilePicture" th:field="*{profilePicture}" placeholder="이미지 URL" class="form-control">
+            <label for="petprofilePicture">프로필 사진 URL</label>
+            <input type="url" id="petprofilePicture" placeholder="이미지 URL" class="form-control">
         </div>
 
         <div class="form-group">
             <label for="isVerified">인증 여부</label>
-            <input type="checkbox" id="isVerified" th:field="*{isVerified}" class="form-check-input">
+            <input type="checkbox" id="isVerified" name="isVerified" class="form-check-input">
             <label for="isVerified" class="form-check-label">인증된 펫인가요?</label>
         </div>
 
         <button type="submit" class="btn btn-primary w-100 mt-3">등록</button>
     </form>
+</div>
 <!-- content -->
 
 <!-- javascript -->
