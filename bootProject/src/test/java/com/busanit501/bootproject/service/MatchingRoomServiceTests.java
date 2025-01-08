@@ -1,27 +1,23 @@
 package com.busanit501.bootproject.service;
 
-import com.busanit501.bootproject.domain.RoomParticipantsStatus;
 import com.busanit501.bootproject.domain.RoomStatus;
-import com.busanit501.bootproject.dto.MatchingRoomDTO;
-import com.busanit501.bootproject.dto.RoomParticipantsDTO;
+import com.busanit501.bootproject.dto.ChatingRoomDTO;
+import com.busanit501.bootproject.dto.ChatRoomParticipantsDTO;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-
 @SpringBootTest
 @Log4j2
 public class MatchingRoomServiceTests {
     @Autowired
-    private MatchingRoomService matchingRoomService;
+    private ChatingRoomService matchingRoomService;
 
     // 매칭방 추가 테스트
     @Test
     public void testAddMatchingRoom() {
-        MatchingRoomDTO matchingRoomDTO = MatchingRoomDTO.builder()
+        ChatingRoomDTO matchingRoomDTO = ChatingRoomDTO.builder()
                 .hostId(1) // 실제 존재하는 hostId로 테스트
                 .title("테스트 매칭방 제목")
                 .description("테스트 매칭방 설명")
@@ -30,9 +26,8 @@ public class MatchingRoomServiceTests {
                 .status(RoomStatus.Open)
                 .build();
 
-        RoomParticipantsDTO roomParticipantsDTO = RoomParticipantsDTO.builder()
+        ChatRoomParticipantsDTO roomParticipantsDTO = ChatRoomParticipantsDTO.builder()
                 .senderId(1) // hostId로 설정
-                .status(RoomParticipantsStatus.Pending)
                 .build();
 
         long roomId = matchingRoomService.addMatchingRoom(matchingRoomDTO, roomParticipantsDTO);
@@ -42,7 +37,7 @@ public class MatchingRoomServiceTests {
     // 매칭방 업데이트 테스트
     @Test
     public void testUpdateMatchingRoom() {
-        MatchingRoomDTO updateDTO = MatchingRoomDTO.builder()
+        ChatingRoomDTO updateDTO = ChatingRoomDTO.builder()
                 .roomId(16) // 업데이트할 매칭방의 ID
                 .title("업데이트된 매칭방 제목")
                 .description("업데이트된 매칭방 설명")

@@ -1,8 +1,6 @@
 package com.busanit501.bootproject.repository;
 
-import com.busanit501.bootproject.domain.MatchingRoom;
-import com.busanit501.bootproject.domain.RoomStatus;
-import com.busanit501.bootproject.domain.User;
+import com.busanit501.bootproject.domain.ChatingRoom;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,20 +8,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @SpringBootTest
 @Log4j2
 public class MatchingRoomRepositoryTest {
 
     @Autowired
-    private MatchingRoomRepository matchingRoomRepository;
+    private ChatingRoomRepository matchingRoomRepository;
 
     //매칭방 조회
     @Test
     @Transactional
     public void searchAllMatchingRoomTest() {
-        List<MatchingRoom> matchingRooms = matchingRoomRepository.searchAllMatchingRoom("",1);
+        List<ChatingRoom> matchingRooms = matchingRoomRepository.searchAllMatchingRoom("",1);
         log.info(matchingRooms);
     }
 
@@ -31,7 +28,7 @@ public class MatchingRoomRepositoryTest {
     @Test
     @Transactional
     public void findMatchingRoomByOnOffTest() {
-        List<MatchingRoom> matchingRooms = matchingRoomRepository.findMatchingRoomByOnOff("");
+        List<ChatingRoom> matchingRooms = matchingRoomRepository.findMatchingRoomByOnOff("");
         log.info(matchingRooms);
     }
 

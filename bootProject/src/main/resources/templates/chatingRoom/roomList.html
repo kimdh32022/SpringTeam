@@ -3,7 +3,6 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{layout/base.html}">
-
 <head>
     <style>
         /* 기존 스타일 유지 */
@@ -184,25 +183,37 @@
             background-color: #0056b3;
         }
 
+        .friend-list {
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        .friend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .friend-item input {
+            margin-right: 10px;
+        }
+
     </style>
 </head>
-
 <body>
 <div layout:fragment="content">
     <div class="chat-container">
+        <!--채팅방 목록-->
         <div class="chat-list">
             <div class="chat-list-header">
                 <div class="search-container" id="searchContainer">
-                    <form action="/matchingRoom/roomList" method="get" id="searchForm">
+                    <form action="/chatingRoom/roomList" method="get" id="searchForm">
                         <input type="text" name="keyword" placeholder="채팅방 제목으로 검색..." th:value="${keyword}">
                         <!--                        <button type="submit" style="display: none;">검색</button>-->
                     </form>
                 </div>
                 <!--                <button class="icon-button" id="searchButton">🔍</button>-->
                 <button class="icon-button" id="addButton">➕</button>
-
             </div>
-
             <div th:each="room : ${roomList}" class="chatInfo">
                 <div class="chat-avatar"></div>
                 <div class="chat-preview">
@@ -217,9 +228,11 @@
                 </div>
             </div>
         </div>
-
+        <!--채팅창-->
         <div class="chat-window">
-            <div class="chat-header">채팅방</div>
+            <div class="chat-header">
+                채팅방
+                <button class="icon-button" id="inviteButton" title="친구 초대">👥</button></div>
             <div class="chat-messages" id="chatMessages">
                 <!-- 채팅 메시지들이 여기에 동적으로 추가됨 -->
             </div>
@@ -228,8 +241,7 @@
                 <button id="sendMessageButton">전송</button>
             </div>
         </div>
-
-        <!--    채팅방 생성모달-->
+        <!--채팅방 생성모달-->
         <div class="modal fade registerModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -259,7 +271,7 @@
             </div>
         </div>
 
-        <!--    //채팅방 정보 모달-->
+        <!--채팅방 정보 모달-->
         <div class="modal fade roomInfoModal" tabindex="-1" aria-labelledby="roomInfoModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
@@ -273,76 +285,87 @@
                         <p class="room-participants"></p>
                         <p class="room-description"></p>
                     </div>
-
                     <!-- 모달 하단 버튼들 -->
                     <div class="modal-footer">
                         <!-- 수정, 삭제, 닫기 버튼 (호스트일 때만 표시) -->
                         <button type="button" class="btn btn-danger room-delete-btn" style="display: none;">삭제</button>
                         <button type="button" class="btn btn-warning room-edit-btn" style="display: none;">수정</button>
-
                         <!-- 나가기, 닫기 버튼 (일반 사용자가 들어갔을 때 표시) -->
                         <button type="button" class="btn btn-danger room-leave-btn" style="display: none;">방 나가기</button>
-
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
                     </div>
                 </div>
             </div>
         </div>
-
-    </div>
-
-    <!-- 수정 모달 -->
-    <div class="modal fade editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">채팅방 수정</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <!-- 수정 모달 -->
+        <div class="modal fade editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">채팅방 수정</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">방 이름</span>
+                            <input type="text" class="form-control edit-title">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">설명</span>
+                            <input type="text" class="form-control edit-description">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">최대인원</span>
+                            <input type="number" class="form-control edit-maxParticipants">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">상태</span>
+                            <select class="form-select edit-status">
+                                <option value="Open">Open</option>
+                                <option value="Closed">Closed</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary editCloseBtn">닫기</button>
+                        <button type="button" class="btn btn-primary editBtn">수정 완료</button>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">방 이름</span>
-                        <input type="text" class="form-control edit-title">
+            </div>
+        </div>
+        <!-- 친구 목록 모달 -->
+        <div class="modal fade inviteModal" tabindex="-1" aria-labelledby="inviteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <!-- 헤더: 검색 기능 -->
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="inviteModalLabel">친구 초대</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">설명</span>
-                        <input type="text" class="form-control edit-description">
+                    <div class="modal-body">
+                        <!-- 검색 입력 -->
+                        <div class="search-bar mb-3">
+                            <input type="text" class="form-control" id="searchUser" placeholder="검색어를 입력하세요">
+                        </div>
+                        <!-- 유저 목록 -->
+                        <div class="friend-list overflow-auto" style="max-height: 400px;">
+                            <!-- 유저 목록이 동적으로 추가됩니다 -->
+                        </div>
                     </div>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">최대인원</span>
-                        <input type="number" class="form-control edit-maxParticipants">
+                    <!-- 푸터: 초대 및 닫기 버튼 -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary inviteBtn">초대</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
                     </div>
-                    <div class="input-group mb-3">
-                        <span class="input-group-text">상태</span>
-                        <select class="form-select edit-status">
-                            <option value="Open">Open</option>
-                            <option value="Closed">Closed</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary editCloseBtn">닫기</button>
-                    <button type="button" class="btn btn-primary editBtn">수정 완료</button>
                 </div>
             </div>
         </div>
     </div>
-
-
-
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="/js/matchingRoom.js"></script>
-
+    <script src="/js/chatingRoom.js"></script>
 </div>
-
-
 <script layout:fragment="javascript" th:inline="javascript">
-    // 검색 버튼 클릭 이벤트 처리
-
-
-
-
-    // + 버튼 클릭 이벤트 처리
+    // 채팅방 생성
     const registerModal = new bootstrap.Modal(document.querySelector(".registerModal"));
     const registerBtn = document.querySelector(".registerBtn");
     const registerCloseBtn = document.querySelector(".registerCloseBtn");
@@ -364,7 +387,7 @@
 
     registerBtn.addEventListener("click",
         function (e) {
-            const matchingRoomDTO = {
+            const chatingRoomDTO = {
                 hostId: 1,
                 title: title.value,
                 description: description.value,
@@ -372,14 +395,13 @@
                 currentParticipants: 1,
                 status: "Open"
             };
-            const roomParticipantsDTO = {
+            const chatRoomParticipantsDTO = {
                 senderId: 1,
-                status: "Pending"
             };
 
             const roomRegisterObj = {
-                matchingRoomDTO: matchingRoomDTO,
-                roomParticipantsDTO: roomParticipantsDTO
+                chatingRoomDTO: chatingRoomDTO,
+                chatRoomParticipantsDTO: chatRoomParticipantsDTO
             };
             addRoom(roomRegisterObj)
                 .then(result => {
@@ -392,12 +414,8 @@
                 });
         });
 
-
-    //수정
     // 방 정보 모달
     const roomInfoModal = new bootstrap.Modal(document.querySelector(".roomInfoModal"));
-
-    // 채팅 리스트에서 각 방 항목에 이벤트 리스너 추가
     const chatItems = document.querySelectorAll(".chat-avatar");
 
     chatItems.forEach(chatItem => {
@@ -413,7 +431,6 @@
             const roomParticipants = this.closest(".chatInfo").querySelector(".chat-preview span").innerText;
             const roomDescription = this.closest(".chatInfo").querySelector(".chat-preview p").innerText;
 
-            // 모달에 정보 설정
             document.querySelector(".room-title").innerText = roomTitle;
             document.querySelector(".room-participants").innerText = roomParticipants;
             document.querySelector(".room-description").innerText = roomDescription;
@@ -431,16 +448,15 @@
                 document.querySelector(".room-leave-btn").style.display = "inline-block";
             }
 
-            // 모달 표시
             roomInfoModal.show();
 
             // 채팅방 삭제
             document.querySelector(".room-delete-btn").addEventListener("click",
                 function (e) {
-                    deleteRoom(roomId) // deleteRoom 함수 호출
+                    deleteRoom(roomId)
                         .then(result => {
                             alert("채팅방이 삭제되었습니다.");
-                            roomInfoModal.hide(); // 모달 닫기
+                            roomInfoModal.hide();
                             location.reload();
                         })
                         .catch((e) => {
@@ -451,7 +467,7 @@
             // 채팅방 나가기
             document.querySelector(".room-leave-btn").addEventListener("click",
                 function (e){
-                    const matchingRoomDTO = {
+                    const chatingRoomDTO = {
                         roomId:roomId,
                         hostId: 1,
                         title: roomTitle,
@@ -460,13 +476,13 @@
                         currentParticipants: currentParticipants,
                         status: status
                     };
-                    const roomParticipantsDTO = {
+                    const chatRoomParticipantsDTO = {
                         chatRoomId:roomId,
                         senderId: 2
                     };
                     const exitObj = {
-                        matchingRoomDTO: matchingRoomDTO,
-                        roomParticipantsDTO: roomParticipantsDTO
+                        chatingRoomDTO: chatingRoomDTO,
+                        chatRoomParticipantsDTO: chatRoomParticipantsDTO
                     };
                     updateAndDelete(exitObj)
                         .then(result => {
@@ -475,7 +491,8 @@
                             location.reload();
                         })
                         .catch(e => {
-                            alert("예외가 발생함");
+                            console.log("방을 나가는 과정에서 예외가 발생함")
+                            alert("방을 나가는 과정에서 예외가 발생함");
                         });
             })
 
@@ -499,11 +516,9 @@
                 editMaxParticipants.value = document.querySelector(".room-participants").innerText.split(" / ")[1];
                 editStatus.value = status;
 
-                // 수정 모달 표시
                 editModal.show();
             });
 
-            // 수정 완료 버튼 클릭 이벤트
             editBtn.addEventListener("click", function () {
                 const updatedRoom = {
                     roomId:roomId,
@@ -525,7 +540,6 @@
                     });
             },false);
 
-            // 수정 창 닫기 버튼
             editCloseBtn.addEventListener("click", function () {
                 editModal.hide();
             });
@@ -562,7 +576,6 @@
         });
     });
 
-
     // 채팅 내역 가져오기 함수
     function loadChatMessages(roomId) {
         console.log(`채팅방 ${roomId}의 메시지를 새로고침합니다.`);
@@ -597,7 +610,6 @@
                             }
                         });
                     }
-
                     chatMessages.appendChild(messageDiv);
                 });
                 chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -626,6 +638,66 @@
             })
             .catch(e => alert("메시지 작성 중 오류 발생"));
     });
+
+    // 친구 초대 모달
+    const inviteModal = new bootstrap.Modal(document.querySelector(".inviteModal"));
+    const inviteButton = document.querySelector("#inviteButton");
+    const inviteBtn = document.querySelector(".inviteBtn");
+    const searchInput = document.querySelector("#searchUser");
+    const friendListContainer = document.querySelector(".friend-list");
+
+    inviteButton.addEventListener("click", function () {
+        console.log("친구 초대 클릭");
+        inviteModal.show();
+        fetchUserList(); // 유저 목록 초기 로드
+    });
+
+    // 초대 버튼 클릭
+    inviteBtn.addEventListener("click", function () {
+        const selectedUsers = Array.from(
+            document.querySelectorAll('.friend-item input[type="checkbox"]:checked')
+        ).map(checkbox => checkbox.value);
+        console.log("초대할 유저 목록:", selectedUsers);
+        // TODO: 초대 로직 추가
+    });
+
+    // 유저 검색
+    searchInput.addEventListener("input", function () {
+        const keyword = searchInput.value.trim();
+        fetchUserList(keyword); // 검색 키워드에 따라 유저 목록 갱신
+    });
+
+    // 유저 목록 가져오기 및 렌더링
+    async function fetchUserList(keyword) {
+        const roomId = 6; // 현재 방 ID (테스트 값)
+        try {
+            console.log(`Fetching user list for roomId: ${roomId}, keyword: ${keyword}`);
+            const userList = await getUserList(roomId, keyword);
+            console.log("Fetched user list:", userList); // 디버깅용 출력
+            renderUserList(userList);
+        } catch (error) {
+            console.error("유저 목록 가져오기 실패:", error);
+        }
+    }
+
+    // 유저 목록 렌더링
+    function renderUserList(userList) {
+        friendListContainer.innerHTML = ""; // 기존 목록 초기화
+        if (userList.length === 0) {
+            friendListContainer.innerHTML = '<p class="text-muted">검색 결과가 없습니다.</p>';
+            return;
+        }
+        userList.forEach(user => {
+            const userItem = document.createElement("div");
+            userItem.classList.add("friend-item", "d-flex", "align-items-center", "mb-2");
+            userItem.innerHTML = `
+                <input type="checkbox" id="friend-${user.id}" value="${user.id}" class="me-2">
+                <label for="friend-${user.id}" class="mb-0">${user.name}</label>
+            `;
+            friendListContainer.appendChild(userItem);
+        });
+    }
+
 </script>
 </body>
 </html>

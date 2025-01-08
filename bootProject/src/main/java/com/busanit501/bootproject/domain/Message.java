@@ -21,7 +21,7 @@ public class Message extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = "chatRoomId")
-    private MatchingRoom chatRoom;
+    private ChatingRoom chatRoom;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "senderId")

@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RoomRegisterDTO {
-    private MatchingRoomDTO matchingRoomDTO;
-    private RoomParticipantsDTO roomParticipantsDTO;
+public class ChatRoomRegisterDTO {
+    private ChatingRoomDTO chatingRoomDTO;
+    private ChatRoomParticipantsDTO chatRoomParticipantsDTO;
 }
 

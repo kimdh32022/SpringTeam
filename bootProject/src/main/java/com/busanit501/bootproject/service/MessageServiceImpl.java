@@ -1,12 +1,12 @@
 package com.busanit501.bootproject.service;
 
-import com.busanit501.bootproject.domain.MatchingRoom;
+import com.busanit501.bootproject.domain.ChatingRoom;
 import com.busanit501.bootproject.domain.Message;
 import com.busanit501.bootproject.domain.User;
 import com.busanit501.bootproject.dto.MessageDTO;
-import com.busanit501.bootproject.repository.MatchingRoomRepository;
+import com.busanit501.bootproject.repository.ChatingRoomRepository;
 import com.busanit501.bootproject.repository.MessageRepository;
-import com.busanit501.bootproject.repository.RoomParticipantsRepository;
+import com.busanit501.bootproject.repository.ChatRoomParticipantsRepository;
 import com.busanit501.bootproject.repository.UserRepostiory;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -29,9 +29,9 @@ public class MessageServiceImpl implements MessageService {
     @Autowired
     private UserRepostiory userRepostiory;
     @Autowired
-    private RoomParticipantsRepository roomParticipantsRepository;
+    private ChatRoomParticipantsRepository roomParticipantsRepository;
     @Autowired
-    private MatchingRoomRepository matchingRoomRepository;
+    private ChatingRoomRepository matchingRoomRepository;
     private final ModelMapper modelMapper;
 
     @Override
@@ -40,7 +40,7 @@ public class MessageServiceImpl implements MessageService {
 
         User sender = userRepostiory.findById(messageDTO.getSenderId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid senderId: " + messageDTO.getSenderId()));
-        MatchingRoom chatRoom = matchingRoomRepository.findById(messageDTO.getChatRoomId())
+        ChatingRoom chatRoom = matchingRoomRepository.findById(messageDTO.getChatRoomId())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid senderId: " + messageDTO.getChatRoomId()));
         message.setSender(sender);
         message.setChatRoom(chatRoom);
@@ -60,6 +60,11 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public void deleteMessage(long messageId) {
         messageRepository.deleteById(messageId);
+    }
+
+    @Override
+    public void deleteAllMessagesByUser(long userId, long roomId) {
+        messageRepository.deleteAllMessagesByUserId(userId, roomId);
     }
 
     @Override
