@@ -4,7 +4,6 @@
 <body>
 <!-- content -->
 <div layout:fragment="content">
-갤러리 리스트
     <div class="profile">
         <div class="profile-image img"></div>
         <div class="profile-info">
@@ -15,6 +14,7 @@
                     <button class="verticalBtn" onclick="verticalClick.call(this)"><img th:src="@{/images/vertical_icon.svg}"></button>
                     <div class="verticalOption" onmouseleave="verticalOption.call(this)">
                         <ul>
+                            <li><a th:href="@{/member/modify}">정보수정</a></li>
                             <li><a>신고하기</a></li>
                         </ul>
                     </div>
@@ -40,7 +40,6 @@
             </ul>
         </div>
     </div>
-
     <div class="profileContent contentContainer">
         <ul class="profileTap">
             <li class="on">
@@ -88,7 +87,6 @@
         </div>
         <!--페이징-->
     </div>
-
 </div>
 <!-- content -->
 
@@ -120,7 +118,16 @@
 
         }, false)
 
+    //글작성, 수정, 삭제 여부를 목록 화면에서 , 모달창에 결과 화면 출력
+    const result = [[${result}]]
 
+    // alert -> 모달창으로 교체 작업.
+    const modal = new bootstrap.Modal(document.querySelector(".modal"))
+
+    if(result){
+        // alert(result)
+        modal.show()
+    }
 </script>
 <!-- javascript -->
 

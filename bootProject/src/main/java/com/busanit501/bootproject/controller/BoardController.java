@@ -1,6 +1,9 @@
 package com.busanit501.bootproject.controller;
 
-import com.busanit501.bootproject.dto.*;
+import com.busanit501.bootproject.dto.BoardDTO;
+import com.busanit501.bootproject.dto.BoardListAllDTO;
+import com.busanit501.bootproject.dto.PageRequestDTO;
+import com.busanit501.bootproject.dto.PageResponseDTO;
 import com.busanit501.bootproject.service.BoardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

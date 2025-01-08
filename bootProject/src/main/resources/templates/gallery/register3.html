@@ -13,8 +13,7 @@
                     <div class="input">
                         <label>이미지</label>
                         <div>
-                            <input type="file" name="files" id="uploadFiles" multiple>
-                            <label for="uploadFiles" class="input">a</label>
+                            <input type="file" name="files" id="uploadFiles" class="form-control" multiple>
                             <button type="button" class="btn btn-primary uploadBtn">업로드하기</button>
                         </div>
                     </div>
@@ -38,7 +37,7 @@
                     </div>
                 </div>
             </div>
-            <input type="hidden" th:value="${user.Username}" class="form-control" id="writer" name="writer" readonly>
+            <input type="text" th:value="${user.Username}" class="form-control" id="writer" name="writer" readonly>
 
             <div class="btn-box">
                 <a th:href="@{/gallery/list}" class="btn btn-gray">취소</a>
@@ -127,7 +126,7 @@
     function showUploadFile({uuid, fileName, link}) {
         const str = `
         <li class="card">
-            <div class="uploadDelete" onclick="javascript:removeFile('${uuid}','${fileName}',this)"></div>
+            <button class="uploadDelete" onclick="javascript:removeFile('${uuid}','${fileName}',this)"></button>
             <img src="/view/${link}" data-src="${uuid+"_"+fileName}">
         </li>
         `

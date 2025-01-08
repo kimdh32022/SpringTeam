@@ -7,15 +7,14 @@
 <body>
 <div layout:fragment="content">
     <div class="profileContent contentContainer">
-        <form id="registerForm" method="post" action="/gallery/register">
+        <form id="registeregisterFormrForm" method="post" action="/gallery/register">
             <div class="form-group">
                 <div class="input-group">
                     <div class="input">
                         <label>이미지</label>
                         <div>
-                            <input type="file" name="files" id="uploadFiles" multiple>
-                            <label for="uploadFiles" class="input">a</label>
-                            <button type="button" class="btn btn-primary uploadBtn">업로드하기</button>
+                            <input type="file" name="files" id="uploadFiles" class="form-control" multiple>
+                            <button type="button" class="btn">파일추가</button>
                         </div>
                     </div>
                 </div>
@@ -25,24 +24,21 @@
             </div>
             <div class="form-group">
                 <div class="uploadHidden">
-                    <!-- 첨부한 이미지의 요소를 첨부할 예정. 서버 전달용이라서, -->
+                    <!-- 첨부한 이미지의 요소를 첨부할 예정. 서버 전달용이라서, 숨겨두기 -->
                 </div>
             </div>
             <div class="form-group">
                 <div class="input-group">
                     <div class="input">
-                        <label>내용</label>
-                        <div>
-                            <textarea type="text" class="form-control col-sm-5" id="content" name="content" rows="5"></textarea>
-                        </div>
+                        <label for="content">내용</label>
+                        <textarea type="text" id="content" name="content" rows="5"></textarea>
                     </div>
                 </div>
             </div>
             <input type="hidden" th:value="${user.Username}" class="form-control" id="writer" name="writer" readonly>
-
             <div class="btn-box">
                 <a th:href="@{/gallery/list}" class="btn btn-gray">취소</a>
-                <button type="submit" class="btn btn-dark submitBtn">작성</button>
+                <button type="submit" class="btn btn-dark submitBtn">등록</button>
             </div>
         </form>
     </div>
@@ -63,7 +59,7 @@
     const auth2 = [[${user}]]
     console.log("auth2 : " + auth2)
 
-    const auth3 = [[${user.Username}]]
+    const auth3 = [[${user.name}]]
     console.log("auth3 : " + auth3)
 
     // 유효성 체크 오류 발생시, alert 경고창 알려주기.
@@ -81,9 +77,8 @@
 
     // 파일 업로드 작업
     // 순서1, 첨부 파일 업로드 모달창 띄우기.
-
     // 순서2,  첨부 파일 모달창에서, 파일 추가시 로직.
-    document.querySelector(".uploadBtn").addEventListener("click",
+    document.querySelector("#uploadFiles").addEventListener("change",
         function (e){
             const formObj = new FormData();
             // input 태그에서 이름 files의 요소를 선택.
@@ -116,8 +111,7 @@
                         showUploadFile(uploadResult)
                     }
                 }
-            )
-                .catch(e => {})
+            ).catch(e => {});
         },false)
 
     // 순서3
@@ -127,7 +121,9 @@
     function showUploadFile({uuid, fileName, link}) {
         const str = `
         <li class="card">
-            <div class="uploadDelete" onclick="javascript:removeFile('${uuid}','${fileName}',this)"></div>
+            <div class="uploadDelete" onclick="javascript:removeFile('${uuid}','${fileName}',this)">
+                <img src="/images/closed.svg">
+            </div>
             <img src="/view/${link}" data-src="${uuid+"_"+fileName}">
         </li>
         `
@@ -186,7 +182,6 @@
 
 
 </script>
-
 
 </body>
 </html>

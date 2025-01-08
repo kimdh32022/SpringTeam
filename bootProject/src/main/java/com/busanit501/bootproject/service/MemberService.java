@@ -7,6 +7,4 @@ public interface MemberService {
 
     }
     void join(MemberJoinDTO memberJoinDTO) throws MidExistException;
-    void update(MemberJoinDTO memberJoinDTO);
-
 }

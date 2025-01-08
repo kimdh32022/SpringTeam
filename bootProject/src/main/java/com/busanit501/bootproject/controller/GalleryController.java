@@ -1,9 +1,6 @@
 package com.busanit501.bootproject.controller;
 
-import com.busanit501.bootproject.dto.GalleryDTO;
-import com.busanit501.bootproject.dto.GalleryListAllDTO;
-import com.busanit501.bootproject.dto.PageRequestDTO;
-import com.busanit501.bootproject.dto.PageResponseDTO;
+import com.busanit501.bootproject.dto.*;
 import com.busanit501.bootproject.service.GalleryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -74,5 +71,20 @@ public class GalleryController {
         return "redirect:/gallery/list";
 
     }
+
+
+    @GetMapping("/read")
+    public void read(@AuthenticationPrincipal UserDetails user, Long galleryId, PageRequestDTO pageRequestDTO,
+                     Model model) {
+        GalleryDTO galleryDTO = galleryService.readOne(galleryId);
+        model.addAttribute("dto", galleryDTO);
+        model.addAttribute("user", user);
+        log.info("user: 정보조회" + user);
+        log.info("boardDTO: 정보조회" + galleryDTO);
+
+    }
+
+
+
 
 }

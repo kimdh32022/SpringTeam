@@ -10,8 +10,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @Log4j2
 @RequiredArgsConstructor
@@ -34,22 +32,5 @@ public class MemberServiceImpl implements MemberService {
         // 일반 유저 권한 추가.
         member.addRole(MemberRole.USER);
          memberRepository.save(member);
-    }
-
-    @Override
-    public void update(MemberJoinDTO memberJoinDTO) {
-        Optional<Member> result = memberRepository.findById(memberJoinDTO.getMid());
-        Member member = result.orElseThrow();
-        member.changeMember(
-                memberJoinDTO.getMpw(),
-                memberJoinDTO.getEmail(),
-                memberJoinDTO.getName(),
-                memberJoinDTO.getGender(),
-                memberJoinDTO.getBirthday(),
-                memberJoinDTO.getPhone(),
-                memberJoinDTO.getAddress()
-        );
-
-        memberRepository.save(member);
     }
 }

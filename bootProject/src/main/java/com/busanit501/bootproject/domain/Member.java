@@ -6,7 +6,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -54,7 +53,4 @@ public class Member extends BaseEntity {
         this.social = social;
     }
 
-    public void changeMember(String mpw, String email, String name, Gender gender, LocalDate birthday, String phone, String address) {
-
-    }
 }
