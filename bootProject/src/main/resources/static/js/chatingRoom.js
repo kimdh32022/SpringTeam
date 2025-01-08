@@ -8,7 +8,6 @@ async function UpdateRoom(roomInfoObj){
     const response = await axios.put(`/chatingRoom/${roomInfoObj.roomId}`,roomInfoObj)
     return response.data
 }
-
 //채팅방 삭제
 async function deleteRoom(roomId) {
     const response = await axios.delete(`/chatingRoom/${roomId}`);  // Send roomId in the URL
@@ -20,7 +19,6 @@ async function updateAndDelete(exitObj){
     const response = await axios.post(`/chatingRoom/roomUAD`, exitObj);
     return response.data
 }
-
 //채팅 조회
 async function getChatList(roomId){
     const result = await axios.get(`/chatingRoom/chatList/${roomId}`);
@@ -37,7 +35,6 @@ async function deleteMessage(messageId){
     const result = await  axios.delete(`/chatingRoom/messageDelete/${messageId}`);
     return result.data
 }
-//유저 조회
 // 유저 조회
 async function getUserList(roomId, keyword) {
     console.log("키워드2 : " + keyword);
@@ -46,8 +43,6 @@ async function getUserList(roomId, keyword) {
     });
     return result.data;
 }
-
-
 //채팅방 초대
 async function inviteUser(inviteObj) {
     const response = await axios.post('/chatingRoom/invite', inviteObj);

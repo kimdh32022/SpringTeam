@@ -27,8 +27,7 @@ public class ChatingRoomController {
     private final ChatingRoomService chatingRoomService;
     private final MessageService messageService;
     private final UserService userService;
-
-    // 매칭룸 리스트 조회
+    // 채팅방 목록 조회
     @GetMapping("/roomList")
     public void roomList(@RequestParam(required = false, defaultValue = "") String keyword
             , UserDTO userDTO
@@ -38,7 +37,7 @@ public class ChatingRoomController {
         model.addAttribute("roomList", roomList);
         model.addAttribute("keyword", keyword);
     }
-    //매칭방 추가
+    //채팅방 목록 조회
     @ResponseBody
     @PostMapping("/roomRegister")
     public void registerRoom(@RequestBody ChatRoomRegisterDTO chatRoomRegisterDTO) {
@@ -58,30 +57,7 @@ public class ChatingRoomController {
         Map<String, Long> map = Map.of("UserId",chatRoomRegisterDTO.getChatRoomParticipantsDTO().getSenderId());
         return map;
     }
-    @ResponseBody
-    @PostMapping("/invite")
-    public List<Map<String, Long>> inviteUsers(@RequestBody List<ChatRoomRegisterDTO> chatRoomRegisterDTOList) {
-        List<Map<String, Long>> responseList = new ArrayList<>();
-
-        for (ChatRoomRegisterDTO chatRoomRegisterDTO : chatRoomRegisterDTOList) {
-            log.info("Processing ChatRoomRegisterDTO: " + chatRoomRegisterDTO);
-
-            // 초대 처리: 채팅방에 유저를 초대하는 서비스 호출
-            chatingRoomService.inviteChatingRoom(
-                    chatRoomRegisterDTO.getChatingRoomDTO(),
-                    chatRoomRegisterDTO.getChatRoomParticipantsDTO()
-            );
-
-            // 처리 결과 저장
-            Map<String, Long> result = Map.of("UserId", chatRoomRegisterDTO.getChatRoomParticipantsDTO().getSenderId());
-            responseList.add(result);
-        }
-
-        return responseList;
-    }
-
-
-    //매칭방 수정
+    //채팅방 수정
     @ResponseBody
     @PutMapping("/{roomId}")
     public Map<String, Long> updateRoom(@RequestBody ChatingRoomDTO roomDTO,
@@ -90,7 +66,6 @@ public class ChatingRoomController {
         Map<String, Long> map = Map.of("roomId",roomId);
         return map;
     }
-
     // 채팅방 삭제
     @ResponseBody
     @DeleteMapping(value = "/{roomId}")
@@ -100,7 +75,6 @@ public class ChatingRoomController {
         //log.info("map : " + map);
         return map;
     }
-
     //채팅 조회
     @ResponseBody
     @GetMapping("/chatList/{roomId}")
@@ -138,5 +112,27 @@ public class ChatingRoomController {
         List<UserDTO> list = userService.searchInviteUser(keyword, roomId);
         log.info("초대가능한 유저 리스트 : " + list);
         return list;
+    }
+    //채팅방에 유저 초대
+    @ResponseBody
+    @PostMapping("/invite")
+    public List<Map<String, Long>> inviteUsers(@RequestBody List<ChatRoomRegisterDTO> chatRoomRegisterDTOList) {
+        List<Map<String, Long>> responseList = new ArrayList<>();
+
+        for (ChatRoomRegisterDTO chatRoomRegisterDTO : chatRoomRegisterDTOList) {
+            log.info("Processing ChatRoomRegisterDTO: " + chatRoomRegisterDTO);
+
+            // 초대 처리: 채팅방에 유저를 초대하는 서비스 호출
+            chatingRoomService.inviteChatingRoom(
+                    chatRoomRegisterDTO.getChatingRoomDTO(),
+                    chatRoomRegisterDTO.getChatRoomParticipantsDTO()
+            );
+
+            // 처리 결과 저장
+            Map<String, Long> result = Map.of("UserId", chatRoomRegisterDTO.getChatRoomParticipantsDTO().getSenderId());
+            responseList.add(result);
+        }
+
+        return responseList;
     }
 }
