@@ -23,7 +23,7 @@ import java.util.Map;
 
 @Log4j2
 @Controller
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
@@ -35,8 +35,23 @@ public class UserController {
 
     // 로그인 화면 호출
     @GetMapping("/login")
-    public String loginForm(Model model) {
-        return "user/login"; // login.html로 이동
+    public void loginGet(String error, String logout,
+                         RedirectAttributes redirectAttributes,
+                         Model model) {
+        log.info("loginGet===================");
+        log.info("logoutTest ===================" + logout);
+
+        if (logout != null) {
+            log.info("logoutTest user ====================");
+        }
+        if (error != null) {
+            // 403 , error 만 확인한 상태
+            log.info("logoutTest error ====================" + error);
+//            redirectAttributes.addFlashAttribute(
+//                    "error", error);
+            model.addAttribute("error", error);
+        }
+
     }
 
     // 로그인 화면에서 기믹 수행
@@ -50,7 +65,7 @@ public class UserController {
         }
         log.info("로그인 실패");
         redirectAttributes.addFlashAttribute("message", "로그인 실패: 이메일 또는 비밀번호가 잘못되었습니다.");
-        return "redirect:/users/login"; // 로그인 페이지로 리다이렉션
+        return "redirect:/user/login"; // 로그인 페이지로 리다이렉션
     }
 
     // 회원가입 화면 호출
@@ -64,7 +79,7 @@ public class UserController {
     public ResponseEntity<UserDTO> signup(@ModelAttribute UserDTO userDTO) {
         userService.createUser(userDTO);
         return ResponseEntity.status(HttpStatus.FOUND)
-                .location(URI.create("/users/login"))
+                .location(URI.create("/user/login"))
                 .build();
         //리다이렉트로 데이터 탑재후 login페이지로 이동시키면 됌
     }
@@ -92,7 +107,7 @@ public class UserController {
         userService.updateUser(userDTO.getUserId(), userDTO);
         session.setAttribute("users", userDTO);
         redirectAttributes.addFlashAttribute("message", "회원정보를 성공적으로 수정했습니다.");
-        return "redirect:/users/profile?userId=" + userDTO.getUserId();
+        return "redirect:/user/profile?userId=" + userDTO.getUserId();
     }
 
     // 삭제 로직 처리
@@ -104,7 +119,7 @@ public class UserController {
         session.invalidate(); // 또는 session.removeAttribute("users");
 
         redirectAttributes.addFlashAttribute("message", "회원탈퇴가 완료되었습니다.");
-        return "redirect:/users/login"; // 홈 페이지 등으로 리다이렉트
+        return "redirect:/user/login"; // 홈 페이지 등으로 리다이렉트
     }
 
     //이메일 중복 기믹 수행

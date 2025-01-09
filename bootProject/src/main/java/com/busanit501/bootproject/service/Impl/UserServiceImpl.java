@@ -8,10 +8,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,21 +22,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO createUser(UserDTO userDTO) {
-        if (userDTO.getProfilePicture() != null && !userDTO.getProfilePicture().isEmpty()) {
-            String fileName = userDTO.getProfilePictureFile().getOriginalFilename();
-            String uploadDir = "C:/upload/img/";
-            File uploadDirFile = new File(uploadDir);
-            if (!uploadDirFile.exists()) {
-            uploadDirFile.mkdirs();
-            }
-            try {
-                Path path = Paths.get(uploadDir + fileName);
-                userDTO.getProfilePictureFile().transferTo(path);
-                userDTO.setProfilePicture("/img" + fileName);
-            }catch (IOException e) {
-                throw new RuntimeException("파일 업로드 실패", e);
-            }
-        } else {
+        if (userDTO.getProfilePicture() == null) {
             userDTO.setProfilePicture("default.jpg");
         }
         Users users = modelMapper.map(userDTO, Users.class);

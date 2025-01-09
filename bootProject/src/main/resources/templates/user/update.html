@@ -1,43 +1,48 @@
 <!doctype html>
 <html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
       layout:decorate="~{layout/base.html}">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
 <body>
 <!-- content -->
 <div layout:fragment="content">
     <div class="container mt-5">
-        <h1>회원정보 수정</h1>
-        <form th:action="@{/users/update}" method="post" id="update-form" enctype="multipart/form-data">
+        <h1 class="text-center">회원정보 수정</h1>
+        <form th:action="@{/user/update}" method="post" id="update-form" enctype="multipart/form-data">
             <!-- Hidden input for userId -->
             <input type="hidden" th:name="userId" th:value="${users.userId}" />
 
             <!-- Email field (readonly) -->
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label for="email">이메일</label>
                 <input type="email" id="email" name="email" th:value="${users.email}" class="form-control" required readonly>
             </div>
+
             <!-- Editable fields -->
-            <div class="form-group">
-                <label for="password">현재 비밀번호</label>
+            <div class="form-group mb-3">
+                <label for="nowpassword">현재 비밀번호</label>
                 <input type="text" id="nowpassword" name="nowpassword" th:value="${users.password}" class="form-control" required readonly>
             </div>
 
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label for="password">변경할 비밀번호</label>
                 <input type="password" id="password" name="password" class="form-control" required>
             </div>
 
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label for="confirm-password">비밀번호 확인</label>
                 <input type="password" id="confirm-password" placeholder="비밀번호 확인" required class="form-control">
                 <p id="password-message" class="text-danger"></p>
             </div>
 
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label for="name">이름</label>
                 <input type="text" id="name" name="name" th:value="${users.name}" class="form-control" required>
             </div>
 
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label>성별</label>
                 <div class="form-check">
                     <input type="radio" id="male" name="gender" value="male" th:checked="${users.gender == 'male'}" required class="form-check-input">
@@ -49,31 +54,36 @@
                 </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label for="phoneNumber">전화번호</label>
                 <input type="text" id="phoneNumber" name="phoneNumber" th:value="${users.phoneNumber}" class="form-control" required>
             </div>
 
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label for="birth">생년월일</label>
                 <input type="date" id="birth" name="birth" th:value="${users.birth}" class="form-control" required>
             </div>
 
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label for="address">주소</label>
                 <input type="text" id="address" name="address" th:value="${users.address}" class="form-control" required>
             </div>
 
-            <div class="form-group">
+            <div class="form-group mb-3">
                 <label>현재 프로필 사진</label>
                 <!-- 현재 프로필 사진 표시 -->
-                <img th:src="${users.profilePicture != null ? users.profilePicture : 'https://via.placeholder.com/150'}"
-                     alt="Profile Picture" width="150" height="150" class="img-thumbnail">
+                <div class="text-center">
+                    <img th:src="${users.profilePicture != null ? users.profilePicture : 'https://via.placeholder.com/150'}"
+                         alt="Profile Picture" class="img-thumbnail" style="max-width: 150px; max-height: 150px;">
+                </div>
             </div>
+
             <button type="submit" class="btn btn-primary w-100 mt-3">수정 완료</button>
         </form>
+
+        <!-- 회원 탈퇴 버튼 -->
         <div class="text-center mt-4">
-            <form th:action="@{/users/delete}" method="post" id="delete-form">
+            <form th:action="@{/user/delete}" method="post" id="delete-form">
                 <input type="hidden" th:name="userId" th:value="${users.userId}" />
                 <button type="submit" class="btn btn-danger w-100">회원 탈퇴</button>
             </form>
@@ -84,7 +94,7 @@
 
 <!-- javascript -->
 <script layout:fragment="javascript" th:inline="javascript">
-
+    // 비밀번호 확인 기능
     document.getElementById('confirm-password').addEventListener('input', function() {
         const password = document.getElementById('password').value;
         const confirmPassword = this.value;

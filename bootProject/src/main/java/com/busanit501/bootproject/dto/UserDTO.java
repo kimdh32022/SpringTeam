@@ -1,9 +1,8 @@
 package com.busanit501.bootproject.dto;
 
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDate;
+        import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -19,7 +18,6 @@ public class UserDTO {
     private String gender;
     private String address;
     private String profilePicture;
-    private MultipartFile profilePictureFile;
     private String phoneNumber;
     private float rating;
     private int ratingCount;

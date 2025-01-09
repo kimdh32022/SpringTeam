@@ -44,8 +44,14 @@
         </div>
 
         <div class="form-group">
-            <label for="petprofilePicture">프로필 사진 URL</label>
-            <input type="url" id="petprofilePicture" placeholder="이미지 URL" class="form-control">
+            <div class="input-group">
+                <div class="input">
+                    <div class="title">프로필 사진</div>
+                    <div>
+                        <input type="file" id="profile-picture" name="profilePicture" accept="image/*" class="input" required>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="form-group">
