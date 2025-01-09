@@ -2,6 +2,10 @@ package com.busanit501.bootproject.dto;
 
 
 
+import com.busanit501.bootproject.domain.User;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +24,8 @@ import java.time.LocalTime;
 public class MatchingRoomDTO {
 
     private Long roomId;
+    private Long hostId;
+    private Long userId;
 
     @NotBlank(message = "제목은 필수 입력 항목입니다.")
     private String title;
@@ -38,15 +44,4 @@ public class MatchingRoomDTO {
     @NotNull(message = "시간은 필수 입력 항목입니다.")
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime meetingTime;
-
-//    @NotNull(message = "최대 인원은 필수 입력 항목입니다.")
-//    @Min(value = 1, message = "최소 인원은 1명이어야 합니다.")
-//    @Max(value = 100, message = "최대 인원은 100명을 초과할 수 없습니다.")
-//    private Integer maxParticipants;
-
-//    @NotNull(message = "방장의 반려동물을 선택해주세요.")
-//    private int hostPetId;
-//
-//    // 추가 펫 선택을 위한 필드
-//    private List<Integer> additionalPetIds;
 }

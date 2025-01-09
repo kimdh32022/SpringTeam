@@ -1,8 +1,10 @@
 package com.busanit501.bootproject.service;
 
 
+import com.busanit501.bootproject.domain.Calendar;
 import com.busanit501.bootproject.domain.MatchingRoom;
 import com.busanit501.bootproject.dto.MatchingRoomDTO;
+import com.busanit501.bootproject.repository.CalendarRepository;
 import com.busanit501.bootproject.repository.MatchingRoomRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +21,10 @@ public class MatchingRoomServicImpl implements MatchingRoomService {
 
 
     private MatchingRoomRepository matchingRoomRepository;
+    private CalendarRepository calendarRepository;
 
     @Override
-    public MatchingRoomDTO findById(Long roomId) {
+    public MatchingRoomDTO findByRoomId(Long roomId) {
         // MatchingRoom을 찾을 때 Optional을 사용하여 예외 처리를 할 수 있음
         Optional<MatchingRoom> roomid = matchingRoomRepository.findById(roomId);
         MatchingRoom matchingRoom = roomid.orElseThrow();
@@ -29,6 +32,4 @@ public class MatchingRoomServicImpl implements MatchingRoomService {
 
         return matchingRoomDTO;
     }
-
-
 }

@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -33,6 +35,10 @@ public class MatchingRoom extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @ManyToOne
+    @JoinColumn(name = "calendar_id", nullable = true) // Calendar와 연결
+    private Calendar calendar;
+
     @Column(nullable = false)
     private String title;
 
@@ -47,23 +53,6 @@ public class MatchingRoom extends BaseEntity {
 
     @Column(nullable = false)
     private LocalTime meetingTime;
-
-//
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "calendar_id")
-//    private Calendar calendar;
-//
-
-//    public User getOtherUser(User currentUser) {
-//        if (host.equals(currentUser)) {
-//            // 현재 사용자가 host인 경우, user 정보를 반환
-//            return user;
-//        } else if (user.equals(currentUser)) {
-//            // 현재 사용자가 user인 경우, host 정보를 반환
-//            return host;
-//        }
-//        return null;  // 매칭룸에 속한 사용자가 아닌 경우
-//    }
 
 
 }

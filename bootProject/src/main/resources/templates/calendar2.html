@@ -13,43 +13,29 @@
     <!-- 캘린더 -------------------------------->
     <div id="calendar-container" class="container-fluid">
         <div id="calendar"></div>
-        <!-- 달력 오른쪽에 일정 추가 및 상세 내용 표시 영역 -->
-        <div id="eventDetails">
-            <h3>일정 정보</h3>
-            <div id="eventInfo">
-                <p><strong>제목:</strong> <span id="modalTitle">-</span></p>
-                <p><strong>날짜:</strong> <span id="modalDate">-</span></p>
-                <p><strong>시간:</strong> <span id="modalTime">-</span></p>
-                <p><strong>수정된 날짜:</strong> <span id="modalModDate">-</span></p>
-            </div>
-            <button type="button" id="addEventButton">일정 추가</button>
-        </div>
     </div>
-
     <!-- 일정 추가 -------------------------------->
     <div id="contextMenu">
         <a href="#" id="addEvent">일정 추가</a>
     </div>
-    <!-- 오른쪽 일정-------------------------------->
-
     <!-- 모달 -------------------------------->
-    <!--    <div id="eventModal" class="custom-modal">-->
-    <!--        <div class="custom-modal-content">-->
-    <!--            <div class="custom-modal-header">-->
-    <!--                <h5>이벤트 상세 정보</h5>-->
-    <!--                <button type="button" id="closeModal" class="close-button">&times;</button>-->
-    <!--            </div>-->
-    <!--            <div class="custom-modal-body">-->
-    <!--                <p><strong>제목:</strong> <span id="modalTitle"></span></p>-->
-    <!--                <p><strong>날짜:</strong> <span id="modalDate"></span></p>-->
-    <!--                <p><strong>시간:</strong> <span id="modalTime"></span></p>-->
-    <!--                <p><strong>수정된 날짜:</strong> <span id="modalModDate"></span></p>-->
-    <!--            </div>-->
-    <!--            <div class="custom-modal-footer">-->
-    <!--                <button type="button" id="closeModalFooter" class="close-button">닫기</button>-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--    </div>-->
+    <div id="eventModal" class="custom-modal">
+        <div class="custom-modal-content">
+            <div class="custom-modal-header">
+                <h5>이벤트 상세 정보</h5>
+                <button type="button" id="closeModal" class="close-button">&times;</button>
+            </div>
+            <div class="custom-modal-body">
+                <p><strong>제목:</strong> <span id="modalTitle"></span></p>
+                <p><strong>장소:</strong> <span id="modalPlace"></span></p>
+                <p><strong>날짜:</strong> <span id="modalDate"></span></p>
+                <p><strong>시간:</strong> <span id="modalTime"></span></p>
+            </div>
+            <div class="custom-modal-footer">
+                <button type="button" id="closeModalFooter" class="close-button">닫기</button>
+            </div>
+        </div>
+    </div>
     <!-------------------------------------------------->
 
 
@@ -58,8 +44,6 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     <!-- 이벤트 스크립트 -->
     <script>
-
-
         document.addEventListener('DOMContentLoaded', function () {
             var calendarEl = document.getElementById('calendar');
             var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -80,32 +64,18 @@
                     // console.log('선택된 날짜:', selectedDate);
                 },
                 eventClick: function (info) {
-                    //틀--------------------------------------
-                    // 새 창으로 일정 상세 보기
-                    // const eventId = info.event.id; // 고유 ID 사용 (필요시 설정)
-                    // openEventDetailPopup(info.event);
-                    //방법1----------------------------------
-                    //                 alert(`
-                    //     제목: ${info.event.title}
-                    //     날짜: ${info.event.start.toLocaleDateString()}
-                    //     시간: ${info.event.extendedProps.time || 'N/A'}
-                    //     수정된 날짜: ${info.event.extendedProps.modDate || 'N/A'}
-                    // );
-
-                    // 방법2 모달
-                    // 모달로 이벤트를 전달
                     const eventDetails = {
                         title: info.event.title,
                         date: info.event.start.toLocaleDateString(),
                         time: info.event.extendedProps.time || 'N/A',
-                        modDate: info.event.extendedProps.modDate || 'N/A'
+                        place: info.event.extendedProps.place || 'N/A'
                     };
 
                     // 모달에 내용 삽입
                     document.getElementById('modalTitle').innerText = eventDetails.title;
                     document.getElementById('modalDate').innerText = eventDetails.date;
                     document.getElementById('modalTime').innerText = eventDetails.time;
-                    document.getElementById('modalModDate').innerText = eventDetails.modDate;
+                    document.getElementById('modalPlace').innerText = eventDetails.place;
 
                     // 모달 띄우기
                     document.getElementById('eventModal').style.display = 'flex';
@@ -122,6 +92,9 @@
             document.getElementById('closeModalFooter').addEventListener('click', function () {
                 document.getElementById('eventModal').style.display = 'none';
             });
+            //----------------------------------
+
+
 
             // // 페이지에서 클릭하면 모달 숨기기
             // document.addEventListener('click', function (e) {
@@ -138,11 +111,11 @@
             // });
 
             //---------------------------------------------------
-            // 비동기로 서버에서 데이터 가져오기
+            // 비동기로 서버에서 데이터 가져오fetchEventDetails기
             fetch('/api/calendar/events')
                 .then(response => response.json())  // JSON 형식으로 변환
                 .then(events => {
-                    console.log(events);
+                    console.log("서버에서 받은 데이터",events);
                     events.forEach(event => {
                         var eventDate = new Date(event.walkDateIso);
                         // const formattedTime = formatTime(event.walkTime);
@@ -153,8 +126,9 @@
                             allDay: true,
                             extendedProps: {
                                 time: event.walkTime || 'N/A',  // 시간 정보
-                                // time: formattedTime, // 포맷된 시간
-                                modDate: event.modDate || 'N/A' // 수정된 날짜 정보
+                                place: event.place || 'N/A'
+                                // modDate: event.modDate || 'N/A' // 수정된 날짜 정보
+
                             }
                         });
                     });
@@ -194,6 +168,7 @@
                                 schedulename: eventTitle,
                                 walkDate: selectedDate,
                                 walkTime: 'N/A' // 시간은 기본값 'N/A'
+                                // walkPlace: eventTitle,
                             };
 
                             // 서버로 데이터 전송 (fetch API)

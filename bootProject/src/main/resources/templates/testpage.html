@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/base.html}">
+<head>
+    <meta charset="UTF-8">
+    <title>산책 일정</title>
+    <link rel="stylesheet" th:href="@{/css/calendarcss.css}">
+</head>
+<body>
+
+<div layout:fragment="content">
+
+    <!-- 캘린더 -------------------------------->
+    <div id="calendar-container" class="container-fluid">
+        <div id="calendar"></div>
+    </div>
+    <!-- 일정 추가 -------------------------------->
+    <div id="contextMenu">
+        <a href="#" id="addEvent">일정 추가</a>
+    </div>
+    <!-- 모달 -------------------------------->
+    <div id="eventModal" class="custom-modal">
+        <div class="custom-modal-content">
+            <div class="custom-modal-header">
+                <h5>이벤트 상세 정보</h5>
+                <button type="button" id="closeModal" class="close-button">&times;</button>
+            </div>
+            <div class="custom-modal-body">
+                <p><strong>제목:</strong> <span id="modalTitle"></span></p>
+                <p><strong>장소:</strong> <span id="modalPlace"></span></p>
+                <p><strong>날짜:</strong> <span id="modalDate"></span></p>
+                <p><strong>시간:</strong> <span id="modalTime"></span></p>
+            </div>
+            <div class="custom-modal-footer">
+                <button type="button" id="closeModalFooter" class="close-button">닫기</button>
+            </div>
+        </div>
+    </div>
+    <!-------------------------------------------------->
+
+
+
+    <!-- FullCalendar -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+    <script>src="/js/calendar.js"</script>
+    <!-- 이벤트 스크립트 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+                },
+                navLinks: true,
+                businessHours: true,
+                editable: true,
+                selectable: true,
+                // events: [],
+                events: async function(fetchInfo, successCallback, failureCallback) {
+                    // const userId = '현재 로그인된 사용자 ID';  // 예시로 현재 로그인된 사용자 ID를 넣어주세요.
+                    const scheduleData = await allschedule(userId);  // 사용자 ID에 맞는 일정 가져오기
+
+                    if (scheduleData) {
+                        const events = scheduleData.map(event => ({
+                            title: event.schedulename,   // 이벤트 제목
+                            start: event.walkDate,       // 시작 날짜
+                            allDay: true,                // 종일 이벤트 여부
+                            extendedProps: {
+                                time: event.walkTime    // 추가 속성
+                            }
+                        }));
+                        successCallback(events);  // FullCalendar에 일정 데이터 전달
+                    } else {
+                        failureCallback("일정 데이터를 가져오지 못했습니다.");
+                    }
+                },
+                select: function (info) {
+                    selectedDate = info.startStr;
+                },
+                eventClick: function (info) {
+                    const eventId = info.event.id;
+                    getEventDetails(eventId);
+
+                }
+
+            });
+            calendar.render();
+
+
+
+        });
+    </script>
+</div>
+</body>
+</html>

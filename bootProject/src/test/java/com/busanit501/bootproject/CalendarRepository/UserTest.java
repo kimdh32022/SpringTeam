@@ -26,9 +26,9 @@ public class UserTest {
     @Test
     public void testInsertUser() {
         User user = User.builder()
-                .email("testuser@testemail.com") // 겹치면 안됨
-                .password("123123")
-                .name("효정")
+                .email("testuser7@testemail.com") // 겹치면 안됨
+                .name("testuser7")
+                .password("234")
                 .age(29)
                 .gender(Gender.FEMALE)
                 .address("부산시")
