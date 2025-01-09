@@ -9,5 +9,6 @@ public interface MessageService {
     long addMessage(MessageDTO messageDTO);
     void updateMessage(MessageDTO messageDTO);
     void deleteMessage(long messageId);
+    void deleteAllMessagesByUser(long userId,long roomId);
     List<MessageDTO> searchMessage(long roodId);
 }

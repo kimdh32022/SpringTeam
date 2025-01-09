@@ -1,6 +1,5 @@
 package com.busanit501.bootproject.dto;
 
-import com.busanit501.bootproject.domain.RoomParticipantsStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,10 +11,9 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RoomParticipantsDTO {
+public class ChatRoomParticipantsDTO {
     private long roomParticipantsId;
     private long chatRoomId;
     private long senderId;
-    private RoomParticipantsStatus status;
     private Timestamp createdAt;
 }

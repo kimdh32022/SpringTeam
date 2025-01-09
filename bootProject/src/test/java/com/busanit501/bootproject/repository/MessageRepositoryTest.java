@@ -1,8 +1,5 @@
 package com.busanit501.bootproject.repository;
 
-import com.busanit501.bootproject.domain.MatchingRoom;
-import com.busanit501.bootproject.domain.Message;
-import com.busanit501.bootproject.domain.User;
 import com.busanit501.bootproject.dto.MessageDTO;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
@@ -11,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @SpringBootTest
 @Log4j2

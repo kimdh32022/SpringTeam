@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "MatchingRoom")
+@Table(name = "ChatingRoom")
 @Getter
 @Setter
 @Builder
@@ -17,10 +17,10 @@ import java.util.Set;
 @NoArgsConstructor
 @ToString
 // Board 해당하는 엔티티이고,
-public class MatchingRoom extends BaseEntity {
+public class ChatingRoom extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int roomId;
+    private Long roomId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hostId")
@@ -45,25 +45,25 @@ public class MatchingRoom extends BaseEntity {
     private Timestamp createdAt;
 
     @OneToMany(mappedBy = "chatRoom",
-            cascade = CascadeType.ALL // 부모 테이블의 변경을 , 자식 테이블에서도 같이 적용됨.
+            cascade = CascadeType.ALL
             ,fetch = FetchType.LAZY,
-            orphanRemoval = true) // 고아 객체 자동 삭제 설정
+            orphanRemoval = true)
     @BatchSize(size = 20)
     @Builder.Default
     private Set<Message> messageSet = new HashSet<>();
 
     @OneToMany(mappedBy = "chatRoom",
-            cascade = CascadeType.ALL // 부모 테이블의 변경을 , 자식 테이블에서도 같이 적용됨.
+            cascade = CascadeType.ALL
             ,fetch = FetchType.LAZY,
-            orphanRemoval = true) // 고아 객체 자동 삭제 설정
+            orphanRemoval = true)
     @BatchSize(size = 20)
     @Builder.Default
-    private Set<RoomParticipants> participantSet = new HashSet<>();
+    private Set<ChatRoomParticipants> participantSet = new HashSet<>();
 
 
 
 
-    public void MatchingRoomUpdate(String title,
+    public void ChatingRoomUpdate(String title,
                                    String description,
                                    long maxParticipants,
                                    RoomStatus status) {
